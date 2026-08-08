@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TrollSpeed-Swift.h"
+#import "DarkSpeed-Swift.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

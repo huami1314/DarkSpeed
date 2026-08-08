@@ -160,8 +160,8 @@
 		CC654E072DABD95200D54F83 /* BackBoardServices.Sim.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; path = BackBoardServices.Sim.tbd; sourceTree = "<group>"; };
 		CC654E092DABD95800D54F83 /* GraphicsServices.Sim.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; path = GraphicsServices.Sim.tbd; sourceTree = "<group>"; };
 		CC654E0B2DABD95E00D54F83 /* SpringBoardServices.Sim.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; path = SpringBoardServices.Sim.tbd; sourceTree = "<group>"; };
-		CC654E452DABD9C200D54F83 /* TrollSpeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrollSpeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CC711D012B5BF550007235A6 /* TrollSpeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrollSpeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC654E452DABD9C200D54F83 /* DarkSpeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DarkSpeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC711D012B5BF550007235A6 /* DarkSpeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DarkSpeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC711D102B5BF551007235A6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CC711D1E2B5BF5C6007235A6 /* HUDHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HUDHelper.mm; sourceTree = "<group>"; };
 		CC711D1F2B5BF5C6007235A6 /* RootViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
@@ -329,8 +329,8 @@
 		CC711D022B5BF550007235A6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CC711D012B5BF550007235A6 /* TrollSpeed.app */,
-				CC654E452DABD9C200D54F83 /* TrollSpeed.app */,
+				CC711D012B5BF550007235A6 /* DarkSpeed.app */,
+				CC654E452DABD9C200D54F83 /* DarkSpeed.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -500,9 +500,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CC654E0D2DABD9C200D54F83 /* TrollSpeed.Sim */ = {
+		CC654E0D2DABD9C200D54F83 /* DarkSpeed.Sim */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CC654E422DABD9C200D54F83 /* Build configuration list for PBXNativeTarget "TrollSpeed.Sim" */;
+			buildConfigurationList = CC654E422DABD9C200D54F83 /* Build configuration list for PBXNativeTarget "DarkSpeed.Sim" */;
 			buildPhases = (
 				CC654E0E2DABD9C200D54F83 /* Sources */,
 				CC654E302DABD9C200D54F83 /* Frameworks */,
@@ -512,14 +512,14 @@
 			);
 			dependencies = (
 			);
-			name = TrollSpeed.Sim;
-			productName = TrollSpeed;
-			productReference = CC654E452DABD9C200D54F83 /* TrollSpeed.app */;
+			name = DarkSpeed.Sim;
+			productName = DarkSpeed;
+			productReference = CC654E452DABD9C200D54F83 /* DarkSpeed.app */;
 			productType = "com.apple.product-type.application";
 		};
-		CC711D002B5BF550007235A6 /* TrollSpeed */ = {
+		CC711D002B5BF550007235A6 /* DarkSpeed */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CC711D1A2B5BF551007235A6 /* Build configuration list for PBXNativeTarget "TrollSpeed" */;
+			buildConfigurationList = CC711D1A2B5BF551007235A6 /* Build configuration list for PBXNativeTarget "DarkSpeed" */;
 			buildPhases = (
 				CC711CFD2B5BF550007235A6 /* Sources */,
 				CC711CFE2B5BF550007235A6 /* Frameworks */,
@@ -530,9 +530,9 @@
 			);
 			dependencies = (
 			);
-			name = TrollSpeed;
-			productName = TrollSpeed;
-			productReference = CC711D012B5BF550007235A6 /* TrollSpeed.app */;
+			name = DarkSpeed;
+			productName = DarkSpeed;
+			productReference = CC711D012B5BF550007235A6 /* DarkSpeed.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -549,7 +549,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CC711CFC2B5BF550007235A6 /* Build configuration list for PBXProject "TrollSpeed" */;
+			buildConfigurationList = CC711CFC2B5BF550007235A6 /* Build configuration list for PBXProject "DarkSpeed" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -564,8 +564,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CC711D002B5BF550007235A6 /* TrollSpeed */,
-				CC654E0D2DABD9C200D54F83 /* TrollSpeed.Sim */,
+				CC711D002B5BF550007235A6 /* DarkSpeed */,
+				CC654E0D2DABD9C200D54F83 /* DarkSpeed.Sim */,
 			);
 		};
 /* End PBXProject section */
@@ -614,7 +614,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nFW=\"$CODESIGNING_FOLDER_PATH/Frameworks\"\nmkdir -p \"$FW\"\ncp -f \"$SRCROOT/Vendor/darksword-lib-thin/libxpf.dylib\" \"$FW/libxpf.dylib\"\ncp -f \"$SRCROOT/Vendor/darksword-lib-thin/libgrabkernel2.dylib\" \"$FW/libgrabkernel2.dylib\"\n# ldid re-signs the dylibs in build-darksword.sh after archiving.\nif [ -n \"$EXPANDED_CODE_SIGN_IDENTITY\" ] && [ \"$CODE_SIGNING_ALLOWED\" = \"YES\" ]; then\n  /usr/bin/codesign --remove-signature \"$FW/libxpf.dylib\" >/dev/null 2>&1 || true\n  /usr/bin/codesign --remove-signature \"$FW/libgrabkernel2.dylib\" >/dev/null 2>&1 || true\n  /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" --timestamp=none --generate-entitlement-der \"$FW/libxpf.dylib\"\n  /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" --timestamp=none --generate-entitlement-der \"$FW/libgrabkernel2.dylib\"\nfi\n";
+			shellScript = "set -e\nFW=\"$CODESIGNING_FOLDER_PATH/Frameworks\"\nmkdir -p \"$FW\"\ncp -f \"$SRCROOT/Vendor/darksword-lib-thin/libxpf.dylib\" \"$FW/libxpf.dylib\"\ncp -f \"$SRCROOT/Vendor/darksword-lib-thin/libgrabkernel2.dylib\" \"$FW/libgrabkernel2.dylib\"\n# Sign the embedded dylibs with the archive identity.\nif [ -n \"$EXPANDED_CODE_SIGN_IDENTITY\" ] && [ \"$CODE_SIGNING_ALLOWED\" = \"YES\" ]; then\n  /usr/bin/codesign --remove-signature \"$FW/libxpf.dylib\" >/dev/null 2>&1 || true\n  /usr/bin/codesign --remove-signature \"$FW/libgrabkernel2.dylib\" >/dev/null 2>&1 || true\n  /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" --timestamp=none --generate-entitlement-der \"$FW/libxpf.dylib\"\n  /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" --timestamp=none --generate-entitlement-der \"$FW/libgrabkernel2.dylib\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -627,20 +627,6 @@
 				CC654E102DABD9C200D54F83 /* TSSettingsIndex.swift in Sources */,
 				CC654E112DABD9C200D54F83 /* HUDHelper.mm in Sources */,
 				DSB100042B5BF5C6007235A6 /* DSBridge.mm in Sources */,
-				D53000000000000000000001 /* RemoteCall.m in Sources */,
-				D53000000000000000000002 /* exc.m in Sources */,
-				D53000000000000000000003 /* thread.m in Sources */,
-				D53000000000000000000004 /* vm.m in Sources */,
-				D53000000000000000000005 /* pac.m in Sources */,
-				D53000000000000000000006 /* findcachedataoff.m in Sources */,
-				DSC7D4F2BFAE1C62672C6E7F /* DSInProcessHUD.mm in Sources */,
-				DSEF139AF73C9CACD9591806 /* persistence_stub.m in Sources */,
-				DSB12E65EF7CF95432804F70 /* darksword.m in Sources */,
-				DSCB2B57E643D28B011998A6 /* offsets.m in Sources */,
-				DS641331F3BD833AB01AE0E0 /* utils.m in Sources */,
-				DS4F226A980404EE4505DC64 /* vfs.m in Sources */,
-				DS71A2CB3B2C052082A7B271 /* sbx.m in Sources */,
-				DSA87FCA18F17A9FCFB9C289 /* vnode.m in Sources */,
 				CC654E122DABD9C200D54F83 /* SPLarkPresentingAnimationController.swift in Sources */,
 				CC654E132DABD9C200D54F83 /* SPLarkDismissingAnimationController.swift in Sources */,
 				CC654E142DABD9C200D54F83 /* HUDBackdropView.mm in Sources */,
@@ -763,16 +749,15 @@
 				CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "-";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "supports/hudapp-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
-					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
+				INFOPLIST_KEY_CFBundleDisplayName = DarkSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -785,9 +770,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/libraries",
 				);
-				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.xxtou.hudapp;
-				PRODUCT_NAME = TrollSpeed;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.huami.darkspeed;
+				PRODUCT_NAME = DarkSpeed;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				SUPPORTS_MACCATALYST = NO;
@@ -808,16 +793,15 @@
 				CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "-";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "supports/hudapp-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
-					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
+				INFOPLIST_KEY_CFBundleDisplayName = DarkSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -830,9 +814,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/libraries",
 				);
-				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.xxtou.hudapp;
-				PRODUCT_NAME = TrollSpeed;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.huami.darkspeed;
+				PRODUCT_NAME = DarkSpeed;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				SUPPORTS_MACCATALYST = NO;
@@ -900,7 +884,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					$THEOS/vendor/include,
 					"$(SRCROOT)/darksword",
 					"$(SRCROOT)/headers",
 					"$(SRCROOT)/Vendor/darksword-headers",
@@ -909,24 +892,14 @@
 					"$(SRCROOT)/Vendor/darksword-kexploit/pe",
 					"$(SRCROOT)/Vendor/darksword-kexploit/TaskRop",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Vendor/darksword-lib-thin",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-lxpf",
-					"-lgrabkernel2",
-				);
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_MODULE_NAME = TrollSpeed;
+				PRODUCT_MODULE_NAME = DarkSpeed;
 				SDKROOT = iphoneos;
-				THEOS = $HOME/theos;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -980,7 +953,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					$THEOS/vendor/include,
 					"$(SRCROOT)/darksword",
 					"$(SRCROOT)/headers",
 					"$(SRCROOT)/Vendor/darksword-headers",
@@ -989,24 +961,14 @@
 					"$(SRCROOT)/Vendor/darksword-kexploit/pe",
 					"$(SRCROOT)/Vendor/darksword-kexploit/TaskRop",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Vendor/darksword-lib-thin",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-lxpf",
-					"-lgrabkernel2",
-				);
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_MODULE_NAME = TrollSpeed;
+				PRODUCT_MODULE_NAME = DarkSpeed;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				THEOS = $HOME/theos;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1022,7 +984,7 @@
 				CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6LMF23FAGL;
 				ENABLE_APPINTENTS_DEPLOYMENT_AWARE_PROCESSING = NO;
 				ENABLE_PREVIEWS = NO;
@@ -1032,11 +994,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DISABLE_PATH_REDIRECTION=1",
-					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
 					"USE_DARKSWORD=1",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "TrollSpeed DS";
+				INFOPLIST_KEY_CFBundleDisplayName = DarkSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -1050,9 +1011,14 @@
 					"$(PROJECT_DIR)/libraries",
 					"$(PROJECT_DIR)/Vendor/darksword-lib-thin",
 				);
-				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.huami.respring;
-				PRODUCT_NAME = TrollSpeed;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lxpf",
+					"-lgrabkernel2",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.huami.darkspeed;
+				PRODUCT_NAME = DarkSpeed;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -1075,7 +1041,7 @@
 				CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6LMF23FAGL;
 				ENABLE_APPINTENTS_DEPLOYMENT_AWARE_PROCESSING = NO;
 				ENABLE_PREVIEWS = NO;
@@ -1085,11 +1051,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DISABLE_PATH_REDIRECTION=1",
-					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
 					"USE_DARKSWORD=1",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "TrollSpeed DS";
+				INFOPLIST_KEY_CFBundleDisplayName = DarkSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -1103,9 +1068,14 @@
 					"$(PROJECT_DIR)/libraries",
 					"$(PROJECT_DIR)/Vendor/darksword-lib-thin",
 				);
-				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.huami.respring;
-				PRODUCT_NAME = TrollSpeed;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lxpf",
+					"-lgrabkernel2",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.huami.darkspeed;
+				PRODUCT_NAME = DarkSpeed;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -1121,7 +1091,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CC654E422DABD9C200D54F83 /* Build configuration list for PBXNativeTarget "TrollSpeed.Sim" */ = {
+		CC654E422DABD9C200D54F83 /* Build configuration list for PBXNativeTarget "DarkSpeed.Sim" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CC654E432DABD9C200D54F83 /* Debug */,
@@ -1130,7 +1100,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CC711CFC2B5BF550007235A6 /* Build configuration list for PBXProject "TrollSpeed" */ = {
+		CC711CFC2B5BF550007235A6 /* Build configuration list for PBXProject "DarkSpeed" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CC711D182B5BF551007235A6 /* Debug */,
@@ -1139,7 +1109,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CC711D1A2B5BF551007235A6 /* Build configuration list for PBXNativeTarget "TrollSpeed" */ = {
+		CC711D1A2B5BF551007235A6 /* Build configuration list for PBXNativeTarget "DarkSpeed" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CC711D1B2B5BF551007235A6 /* Debug */,

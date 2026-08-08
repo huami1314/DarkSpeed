@@ -75,7 +75,7 @@ void _HUDEventCallback(void *target, void *refcon, IOHIDServiceRef service, IOHI
                 static dispatch_once_t onceToken;
                 dispatch_once(&onceToken, ^{
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                     keyWindow = [[app windows] firstObject];
 #pragma clang diagnostic pop
                 });

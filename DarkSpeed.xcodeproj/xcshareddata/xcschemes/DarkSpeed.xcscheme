@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CC711D002B5BF550007235A6"
-               BuildableName = "TrollSpeed.app"
-               BlueprintName = "TrollSpeed"
-               ReferencedContainer = "container:TrollSpeed.xcodeproj">
+               BuildableName = "DarkSpeed.app"
+               BlueprintName = "DarkSpeed"
+               ReferencedContainer = "container:DarkSpeed.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CC711D002B5BF550007235A6"
-            BuildableName = "TrollSpeed.app"
-            BlueprintName = "TrollSpeed"
-            ReferencedContainer = "container:TrollSpeed.xcodeproj">
+            BuildableName = "DarkSpeed.app"
+            BlueprintName = "DarkSpeed"
+            ReferencedContainer = "container:DarkSpeed.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </LaunchAction>
@@ -59,9 +59,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CC711D002B5BF550007235A6"
-            BuildableName = "TrollSpeed.app"
-            BlueprintName = "TrollSpeed"
-            ReferencedContainer = "container:TrollSpeed.xcodeproj">
+            BuildableName = "DarkSpeed.app"
+            BlueprintName = "DarkSpeed"
+            ReferencedContainer = "container:DarkSpeed.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

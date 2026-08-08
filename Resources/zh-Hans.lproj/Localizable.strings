@@ -107,7 +107,7 @@
 "Large" = "较大";
 
 /* No comment provided by engineer. */
-"Made with ♥ by @GITHUB@Lessica and @GITHUB@jmpews\nTranslation @TRANSLATION@" = "由 @GITHUB@Lessica 和 @GITHUB@jmpews 倾情制作";
+"DarkSpeed by @GITHUB@huami1314\nBased on TrollSpeed by @GITHUB@i_82" = "DarkSpeed 由 @GITHUB@huami1314 制作\n基于 @GITHUB@i_82 的 TrollSpeed";
 
 /* No comment provided by engineer. */
 "Memory Pressure" = "内存压力测试";
@@ -163,8 +163,54 @@
 /* No comment provided by engineer. */
 "You can quit this app now.\nThe HUD will persist on your screen." = "你现在可以退出这个应用了，\n悬浮窗将会一直显示在你的屏幕上。";
 
+"DarkSpeed is running in the background.\nDo not force-quit it after enabling the HUD." = "DarkSpeed 会在后台继续运行。\n启用悬浮窗后请勿从多任务界面强制关闭应用。";
+
 /* No comment provided by engineer. */
 "↑↓" = "↑↓";
 
 /* No comment provided by engineer. */
 "▲▼" = "▲▼";
+
+/* DarkSpeed 启动与 SpringBoard 桥接 */
+"Error: " = "错误：";
+"System data is ready" = "系统数据已就绪";
+"Caching kernelcache" = "正在缓存 kernelcache";
+"Kernelcache cached" = "kernelcache 已缓存";
+"Kernelcache cache failed" = "kernelcache 缓存失败";
+"Kernelcache download or parsing failed. Check DarkSpeed network access and your connection, then retry. If it still fails, reinstall over the existing app; restart the device only as a last resort." = "kernelcache 获取或解析失败。请检查 DarkSpeed 的网络权限与当前网络后重试；仍失败请覆盖安装，最后再手动重启设备。";
+"Waiting for network (%.0f seconds, attempt %lu)" = "正在等待网络（已等待 %.0f 秒，第 %lu 次）";
+"Network connected; preparing kernelcache" = "网络已连接，正在准备 kernelcache";
+"No valid response" = "未收到有效响应";
+"Network wait timed out" = "网络等待超时";
+"Could not connect after waiting %.0f seconds: %@\nCheck DarkSpeed network access and your connection, then retry." = "等待网络 %.0f 秒后仍无法连接：%@\n请检查 DarkSpeed 的网络权限与当前网络后重试。";
+"Network is not ready; waited %.0f seconds. Retrying in %.0f seconds" = "网络尚未就绪，已等待 %.0f 秒；将在 %.0f 秒后重试";
+"Requesting network access" = "正在请求网络权限";
+"Startup failed" = "启动失败";
+"Background keep-alive failed: %@" = "后台保持启动失败：%@";
+"Background resource preparation failed: %@" = "后台资源准备失败：%@";
+"Background keep-alive playback failed: %@" = "后台保持播放失败：%@";
+"Screenshot-hiding container unavailable; using normal display" = "截图隐藏容器不可用，已保持普通显示";
+"Could not adopt the DarkSpeed environment." = "DarkSpeed 环境接入失败。";
+"DarkSpeed system data is unavailable." = "DarkSpeed 系统数据不可用。";
+"DarkSpeed initialization complete" = "DarkSpeed 初始化完成";
+"Initializing DarkSpeed" = "正在初始化 DarkSpeed";
+"DarkSpeed initialization failed (%d)" = "DarkSpeed 初始化失败（%d）";
+"DarkSpeed initialization failed" = "DarkSpeed 初始化失败";
+"Unknown error" = "未知错误";
+"Closing HUD" = "正在关闭 HUD";
+"HUD closed" = "HUD 已关闭";
+"Preparing startup" = "准备启动";
+"Preparing system data" = "获取系统数据";
+"Kernelcache download or parsing failed. Network access may still be pending. Check network access and retry; if it still fails, reinstall over the existing app. Restart the device only as a last resort." = "kernelcache 获取或解析失败，可能是网络权限、网络状态或首次授权尚未生效。请确认网络权限后重试；仍失败请覆盖安装，最后再手动重启设备。";
+"DarkSpeed startup failed. Retry or reinstall over the existing app; restart the device only as a last resort." = "DarkSpeed 启动失败。请先重试或覆盖安装；仍失败再手动重启设备。";
+"Locating SpringBoard" = "定位 SpringBoard";
+"SpringBoard is not ready, so the HUD cannot be created. Retry or reinstall over the existing app; restart the device only as a last resort." = "SpringBoard 尚未就绪，无法创建悬浮窗。请重试；仍失败请覆盖安装，最后再手动重启设备。";
+"Connecting to SpringBoard" = "连接 SpringBoard";
+"SpringBoard connection failed: " = "SpringBoard 连接失败：";
+"SpringBoard connection failed: %@\nRetry or reinstall over the existing app; restart the device only as a last resort." = "SpringBoard 连接失败：%@\n请重试；仍失败请覆盖安装，最后再手动重启设备。";
+"Creating SpringBoard HUD" = "创建 SpringBoard HUD";
+"SpringBoard HUD creation failed. Retry or reinstall over the existing app; restart the device only as a last resort." = "SpringBoard HUD 创建失败。请重试；仍失败请覆盖安装，最后再手动重启设备。";
+"SpringBoard HUD exception: %@\nRetry or reinstall over the existing app; restart the device only as a last resort." = "SpringBoard HUD 异常：%@\n请重试；仍失败请覆盖安装，最后再手动重启设备。";
+"SpringBoard HUD started" = "SpringBoard HUD 已启动";
+"DarkSpeed is not enabled in this build." = "当前构建未启用 DarkSpeed 运行时。";
+"Waiting to start" = "等待启动";

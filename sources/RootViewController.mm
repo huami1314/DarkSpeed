@@ -118,7 +118,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     [_topLeftButton addTarget:self action:@selector(tapTopLeftButton:) forControlEvents:UIControlEventTouchUpInside];
     [_topLeftButton setImage:[UIImage systemImageNamed:@"arrow.up.left"] forState:UIControlStateNormal];
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [_topLeftButton setAdjustsImageWhenHighlighted:NO];
 #pragma clang diagnostic pop
     [self.backgroundView addSubview:_topLeftButton];
@@ -143,7 +143,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     [_topRightButton addTarget:self action:@selector(tapTopRightButton:) forControlEvents:UIControlEventTouchUpInside];
     [_topRightButton setImage:[UIImage systemImageNamed:@"arrow.up.right"] forState:UIControlStateNormal];
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [_topRightButton setAdjustsImageWhenHighlighted:NO];
 #pragma clang diagnostic pop
     [self.backgroundView addSubview:_topRightButton];
@@ -167,7 +167,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     [_topCenterButton addTarget:self action:@selector(tapTopCenterButton:) forControlEvents:UIControlEventTouchUpInside];
     [_topCenterButton setImage:[UIImage systemImageNamed:@"arrow.up"] forState:UIControlStateNormal];
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [_topCenterButton setAdjustsImageWhenHighlighted:NO];
 #pragma clang diagnostic pop
     [self.backgroundView addSubview:_topCenterButton];
@@ -328,11 +328,6 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Reset Settings", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [self resetUserDefaults];
         }]];
-#if DEBUG && !TARGET_OS_SIMULATOR
-        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Memory Pressure", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            SimulateMemoryPressure();
-        }]];
-#endif
         [self presentViewController:alertController animated:YES completion:nil];
     }
 }
@@ -577,24 +572,17 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
             NSParagraphStyleAttributeName: creditsParaStyle,
         };
 
-        NSString *hintText = NSLocalizedString(@"You can quit this app now.\nThe HUD will persist on your screen.", nil);
+        NSString *hintText = NSLocalizedString(@"DarkSpeed is running in the background.\nDo not force-quit it after enabling the HUD.", nil);
         hintAttributedString = [[NSAttributedString alloc] initWithString:hintText attributes:defaultAttributes];
 
         NSTextAttachment *githubIcon = [NSTextAttachment textAttachmentWithImage:[UIImage imageNamed:@"github-mark-white"]];
         [githubIcon setBounds:CGRectMake(0, 0, 14, 14)];
 
-        NSTextAttachment *i18nIcon = [NSTextAttachment textAttachmentWithImage:[UIImage systemImageNamed:@"character.bubble.fill"]];
-        [i18nIcon setBounds:CGRectMake(0, 0, 14, 14)];
-
         NSAttributedString *githubIconText = [NSAttributedString attributedStringWithAttachment:githubIcon];
         NSMutableAttributedString *githubIconTextFull = [[NSMutableAttributedString alloc] initWithAttributedString:githubIconText];
         [githubIconTextFull appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:creditsAttributes]];
 
-        NSAttributedString *i18nIconText = [NSAttributedString attributedStringWithAttachment:i18nIcon];
-        NSMutableAttributedString *i18nIconTextFull = [[NSMutableAttributedString alloc] initWithAttributedString:i18nIconText];
-        [i18nIconTextFull appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:creditsAttributes]];
-
-        NSString *creditsText = NSLocalizedString(@"Made with ♥ by @GITHUB@Lessica and @GITHUB@jmpews\nTranslation @TRANSLATION@", nil);
+        NSString *creditsText = NSLocalizedString(@"DarkSpeed by @GITHUB@huami1314\nBased on TrollSpeed by @GITHUB@i_82", nil);
         NSMutableAttributedString *creditsAttributedText = [[NSMutableAttributedString alloc] initWithString:creditsText attributes:creditsAttributes];
 
         // replace all "@GITHUB@" with github icon
@@ -604,13 +592,6 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
         while (atRange.location != NSNotFound) {
             [creditsAttributedText replaceCharactersInRange:atRange withAttributedString:githubIconTextFull];
             atRange = [creditsAttributedText.string rangeOfString:@"@GITHUB@"];
-        }
-
-        // replace all "@TRANSLATION@" with character bubble
-        atRange = [creditsAttributedText.string rangeOfString:@"@TRANSLATION@"];
-        while (atRange.location != NSNotFound) {
-            [creditsAttributedText replaceCharactersInRange:atRange withAttributedString:i18nIconTextFull];
-            atRange = [creditsAttributedText.string rangeOfString:@"@TRANSLATION@"];
         }
 
         creditsAttributedString = creditsAttributedText;
@@ -668,7 +649,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     if (_isRemoteHUDActive) {
         return;
     }
-    NSString *repoURLString = @"https://trollspeed.app";
+    NSString *repoURLString = @"https://github.com/huami1314/DarkSpeed";
     NSURL *repoURL = [NSURL URLWithString:repoURLString];
     [[UIApplication sharedApplication] openURL:repoURL options:@{} completionHandler:nil];
 }
@@ -784,7 +765,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
         label.textAlignment = NSTextAlignmentCenter;
         label.numberOfLines = 0;
         label.lineBreakMode = NSLineBreakByWordWrapping;
-        label.text = @"正在初始化 DS\n0%";
+        label.text = [NSString stringWithFormat:@"%@\n0%%", NSLocalizedString(@"Initializing DarkSpeed", nil)];
         [overlay addSubview:label];
 
         [NSLayoutConstraint activateConstraints:@[
@@ -811,7 +792,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     _dsProgressLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _dsProgressLabel.font = [UIFont monospacedDigitSystemFontOfSize:15 weight:UIFontWeightSemibold];
     _dsProgressLabel.textAlignment = NSTextAlignmentCenter;
-    _dsProgressLabel.text = @"正在初始化 DS\n0%";
+    _dsProgressLabel.text = [NSString stringWithFormat:@"%@\n0%%", NSLocalizedString(@"Initializing DarkSpeed", nil)];
 }
 
 - (void)hideDSProgressOverlay
@@ -831,7 +812,9 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     _dsProgressLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _dsProgressLabel.font = [UIFont monospacedSystemFontOfSize:13 weight:UIFontWeightRegular];
     _dsProgressLabel.textAlignment = NSTextAlignmentLeft;
-    _dsProgressLabel.text = [NSString stringWithFormat:@"DS 初始化失败\n\n%@", error.length > 0 ? error : @"未知错误"];
+    _dsProgressLabel.text = [NSString stringWithFormat:@"%@\n\n%@",
+        NSLocalizedString(@"DarkSpeed initialization failed", nil),
+        error.length > 0 ? error : NSLocalizedString(@"Unknown error", nil)];
 }
 
 - (void)dsProgressDidChange:(NSNotification *)note
@@ -846,7 +829,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     if (p > 1.0) p = 1.0;
     _dsProgressBar.progress = (float)p;
     NSString *stage = DSBridgeStage();
-    if (stage.length == 0) stage = @"正在初始化 DS";
+    if (stage.length == 0) stage = NSLocalizedString(@"Initializing DarkSpeed", nil);
     _dsProgressLabel.text = [NSString stringWithFormat:@"%@\n%d%%", stage, (int)llround(p * 100.0)];
 }
 #endif

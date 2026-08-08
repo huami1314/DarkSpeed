@@ -33,7 +33,7 @@
                 // Fade out the HUD window
                 [UIView animateWithDuration:FADE_OUT_DURATION animations:^{
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                     [[self.windows firstObject] setAlpha:0.0];
 #pragma clang diagnostic pop
                 } completion:^(BOOL finished) {

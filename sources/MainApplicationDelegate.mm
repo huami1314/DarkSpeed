@@ -25,7 +25,7 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-    if ([url.scheme isEqualToString:@"trollspeed"]) {
+    if ([url.scheme isEqualToString:@"darkspeed"]) {
         if ([url.host isEqualToString:@"toggle"]) {
             [self setupAndNotifyToggleHUDAfterLaunchWithAction:nil];
             return YES;
@@ -72,8 +72,10 @@
     [self.window setRootViewController:_rootViewController];
     [self.window makeKeyAndVisible];
 
-    // Do not run DarkSword during foreground launch. The HUD toggle starts the
-    // serialized bootstrap + SpringBoard RemoteCall chain off the main thread.
+    // Trigger network access immediately and prepare the current build's
+    // kernelcache in the sandbox. The privileged chain still starts only when
+    // the user enables the HUD.
+    DSBridgeWarmUpNetworkAndPrefetchKernelCache();
 
     return YES;
 }

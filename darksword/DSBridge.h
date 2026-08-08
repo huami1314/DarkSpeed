@@ -1,8 +1,8 @@
 //
 //  DSBridge.h
-//  TrollSpeed + DarkSword
+//  DarkSpeed
 //
-//  Thin bridge between TrollSpeed's HUD path and the bundled DarkSword chain.
+//  Bridge between DarkSpeed's HUD controller and its bundled runtime.
 //
 
 #import <Foundation/Foundation.h>
@@ -16,6 +16,10 @@ OBJC_EXTERN BOOL DSBridgeCompiledIn(void);
 
 /// YES after a successful bootstrap (or KRW adopt from the parent).
 OBJC_EXTERN BOOL DSBridgeIsReady(void);
+
+/// Trigger outbound network access and prefetch this build's kernelcache into
+/// Documents/kernelcache. Safe to call repeatedly; work is coalesced.
+OBJC_EXTERN void DSBridgeWarmUpNetworkAndPrefetchKernelCache(void);
 
 /// Run DS initialization after loading device offsets.
 /// No-ops / returns NO when USE_DARKSWORD is not defined or symbols are missing.

@@ -1,10 +1,9 @@
 //
 //  DSBridge.mm
-//  TrollSpeed + DarkSword
+//  DarkSpeed
 //
 
 #import "DSBridge.h"
-#import "DSInProcessHUD.h"
 #import "HUDHelper.h"
 #import "HUDPresetPosition.h"
 #import "SpringBoardServices.h"
@@ -27,19 +26,25 @@
 
 extern "C" CFIndex CARenderServerGetDirtyFrameCount(void *);
 
-NSString * const DSBridgeProgressNotification = @"com.huami.trollspeed.dsbridge.progress";
+NSString * const DSBridgeProgressNotification = @"com.huami.darkspeed.dsbridge.progress";
 
 static os_unfair_lock g_errorLock = OS_UNFAIR_LOCK_INIT;
 static NSString *g_dsLastError = @"";
-static NSString *g_dsStage = @"等待启动";
+static NSString *g_dsStage = @"Waiting to start";
+#if USE_DARKSWORD
 static std::atomic_bool g_dsReady(false);
 static std::atomic_bool g_dsRunning(false);
 static std::atomic_bool g_hudRequested(false);
 static std::atomic_bool g_hudActive(false);
 static std::atomic<double> g_dsProgress(0.0);
+#endif
+
+static NSString *ds_localized(NSString *key) {
+    return [NSBundle.mainBundle localizedStringForKey:key value:key table:nil];
+}
 
 static void ds_post_progress(void) {
-    notify_post("com.huami.trollspeed.dsbridge.progress");
+    notify_post("com.huami.darkspeed.dsbridge.progress");
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:DSBridgeProgressNotification object:nil];
     });
@@ -74,6 +79,7 @@ static void ds_append_checkpoint(NSString *message) {
     [handle closeFile];
 }
 
+#if USE_DARKSWORD
 static void ds_set_stage(NSString *stage) {
     NSString *next = [stage copy] ?: @"";
     os_unfair_lock_lock(&g_errorLock);
@@ -83,6 +89,7 @@ static void ds_set_stage(NSString *stage) {
     ds_append_checkpoint(next);
     ds_post_progress();
 }
+#endif
 
 static void ds_set_error(NSString *message) {
     NSString *next = [message copy] ?: @"";
@@ -91,7 +98,7 @@ static void ds_set_error(NSString *message) {
     os_unfair_lock_unlock(&g_errorLock);
     if (next.length > 0) {
         os_log_error(OS_LOG_DEFAULT, "[DSBridge] %{public}@", next);
-        ds_append_checkpoint([@"错误：" stringByAppendingString:next]);
+        ds_append_checkpoint([ds_localized(@"Error: ") stringByAppendingString:next]);
         notify_post(NOTIFY_RELOAD_APP);
     }
     ds_post_progress();
@@ -153,11 +160,18 @@ static BOOL g_lastInverted = NO;
 static BOOL g_lastHideAtSnapshot = NO;
 static NSMutableDictionary<NSString *, NSNumber *> *g_remoteSelectorCache = nil;
 static NSMutableDictionary<NSString *, NSNumber *> *g_remoteClassCache = nil;
+static std::atomic<int> g_kernelPrefetchState(0); // 0 idle, 1 running, 2 ready, 3 failed
+static dispatch_group_t g_kernelPrefetchGroup = nil;
+static std::atomic<int> g_networkWarmupState(0); // 0 idle, 1 waiting, 2 ready, 3 timed out
+static dispatch_group_t g_networkWarmupGroup = nil;
+static const NSTimeInterval kDSNetworkWarmupTimeout = 180.0;
+static const NSTimeInterval kDSNetworkRetryDelay = 3.0;
 
 static const uint64_t kDSRemoteTextScratchOffset = 0x1000;
 static const size_t kDSRemoteTextScratchCapacity = 0x800;
 
 static void ds_update_rate(void);
+static void ds_stop_keepalive(void);
 
 typedef struct {
     BOOL landscape;
@@ -186,7 +200,7 @@ static dispatch_queue_t ds_bridge_queue(void) {
     static dispatch_queue_t queue;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        queue = dispatch_queue_create("com.huami.trollspeed.darksword", DISPATCH_QUEUE_SERIAL);
+        queue = dispatch_queue_create("com.huami.darkspeed.darksword", DISPATCH_QUEUE_SERIAL);
     });
     return queue;
 }
@@ -215,50 +229,220 @@ static int ds_env_int(const char *name, int fallback) {
 }
 
 static BOOL ds_has_symbol_offsets(void) {
-    NSUserDefaults *defaults = GetStandardUserDefaults();
-    return [defaults objectForKey:@"darksword.kernprocoff"] != nil ||
-           [defaults objectForKey:@"darksword.allprocoff"] != nil;
+    return kernel_symbol_offsets_are_current();
 }
 
-// Resolve kernproc/allproc from Documents/kernelcache. If the file
-// is missing, download via dlkcache() on a background thread with a timeout so
-// the UI never hangs at 92%. Never use vnode redirect here.
-static BOOL ds_prepare_kernel_offsets(void) {
-    if (ds_has_symbol_offsets()) return YES;
-    if (emergencyfixfunctiontobereplacedlateronquestionmark()) return YES;
+static dispatch_group_t ds_kernel_prefetch_group(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        g_kernelPrefetchGroup = dispatch_group_create();
+    });
+    return g_kernelPrefetchGroup;
+}
 
-    NSString *docs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
-    NSString *kc = [docs stringByAppendingPathComponent:@"kernelcache"];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:kc]) {
-        return emergencyfixfunctiontobereplacedlateronquestionmark();
+static dispatch_group_t ds_network_warmup_group(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        g_networkWarmupGroup = dispatch_group_create();
+    });
+    return g_networkWarmupGroup;
+}
+
+static BOOL ds_mark_network_warmup_ready(void) {
+    int expected = 1;
+    if (!g_networkWarmupState.compare_exchange_strong(expected, 2)) return NO;
+    dispatch_group_leave(ds_network_warmup_group());
+    return YES;
+}
+
+static void ds_start_kernel_prefetch(BOOL retryFailed) {
+    BOOL hasBuiltinOffsets = install_builtin_kernel_symbol_offsets();
+    if (hasBuiltinOffsets || ds_has_symbol_offsets()) {
+        g_kernelPrefetchState.store(2);
+        ds_set_stage(ds_localized(@"System data is ready"));
+        return;
     }
 
-    __block BOOL result = NO;
-    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    int state = g_kernelPrefetchState.load();
+    while (state != 1 && state != 2) {
+        if (state == 3 && !retryFailed) return;
+        if (g_kernelPrefetchState.compare_exchange_weak(state, 1)) break;
+    }
+    if (state == 1 || state == 2) return;
+
+    ds_set_error(@"");
+    ds_set_stage(ds_localized(@"Caching kernelcache"));
+    dispatch_group_t group = ds_kernel_prefetch_group();
+    dispatch_group_enter(group);
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-        result = dlkcache();
-        dispatch_semaphore_signal(sem);
+        BOOL ready = dlkcache();
+        g_kernelPrefetchState.store(ready ? 2 : 3);
+        if (ready) {
+            os_log(OS_LOG_DEFAULT, "[DSBridge] kernelcache prefetch ready");
+            ds_mark_network_warmup_ready();
+            ds_set_error(@"");
+            ds_set_stage(ds_localized(@"Kernelcache cached"));
+        } else {
+            os_log_error(OS_LOG_DEFAULT, "[DSBridge] kernelcache prefetch failed");
+            if (g_networkWarmupState.load() == 1) {
+                ds_set_stage(ds_localized(@"Requesting network access"));
+            } else {
+                ds_set_stage(ds_localized(@"Kernelcache cache failed"));
+            }
+        }
+        dispatch_group_leave(group);
     });
-    // 90s timeout for kernelcache download + xpf parse
-    if (dispatch_semaphore_wait(sem, dispatch_time(DISPATCH_TIME_NOW, 90 * NSEC_PER_SEC)) != 0) {
-        os_log_error(OS_LOG_DEFAULT, "[DSBridge] dlkcache timed out after 90s");
-        ds_set_error(@"系统数据准备超时，已切换安全模式。");
+}
+
+static BOOL ds_wait_for_kernel_attempt(CFAbsoluteTime deadline) {
+    if (ds_has_symbol_offsets()) return YES;
+    if (g_kernelPrefetchState.load() != 1) return NO;
+
+    NSTimeInterval remaining = MAX(0.0, deadline - CFAbsoluteTimeGetCurrent());
+    if (remaining <= 0.0) return NO;
+    long waitResult = dispatch_group_wait(
+        ds_kernel_prefetch_group(),
+        dispatch_time(DISPATCH_TIME_NOW, (int64_t)(remaining * NSEC_PER_SEC)));
+    if (waitResult != 0) {
+        os_log_error(OS_LOG_DEFAULT, "[DSBridge] kernelcache prefetch timed out");
         return NO;
     }
-    return result;
+    return ds_has_symbol_offsets();
 }
 
-static void ds_finish_enable_inprocess(NSString *reason) {
-    os_log(OS_LOG_DEFAULT, "[DSBridge] using in-process HUD: %{public}@", reason);
-    ds_set_stage(@"已切换安全显示");
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        DSInProcessHUDSetEnabled(YES);
-    });
-    g_hudActive.store(true);
+static BOOL ds_wait_for_kernel_prefetch(NSTimeInterval timeout, BOOL retryFailed) {
+    BOOL hasBuiltinOffsets = install_builtin_kernel_symbol_offsets();
+    if (hasBuiltinOffsets || ds_has_symbol_offsets()) {
+        g_kernelPrefetchState.store(2);
+        return YES;
+    }
+
+    CFAbsoluteTime deadline = CFAbsoluteTimeGetCurrent() + timeout;
+    DSBridgeWarmUpNetworkAndPrefetchKernelCache();
+    ds_start_kernel_prefetch(retryFailed);
+    if (ds_wait_for_kernel_attempt(deadline)) return YES;
+
+    // Some regions show a first-network-access prompt while others do not.
+    // Only wait for that optional path after a real kernelcache request has
+    // failed; a successful real request is authoritative on every device.
+    if (g_networkWarmupState.load() == 1) {
+        NSTimeInterval remaining = MAX(0.0, deadline - CFAbsoluteTimeGetCurrent());
+        if (remaining <= 0.0) return NO;
+        long networkWaitResult = dispatch_group_wait(
+            ds_network_warmup_group(),
+            dispatch_time(DISPATCH_TIME_NOW, (int64_t)(remaining * NSEC_PER_SEC)));
+        if (networkWaitResult != 0) {
+            os_log_error(OS_LOG_DEFAULT,
+                         "[DSBridge] network warm-up timed out while enabling HUD");
+            return NO;
+        }
+    }
+    if (ds_has_symbol_offsets()) return YES;
+    if (g_networkWarmupState.load() != 2) return NO;
+
+    ds_start_kernel_prefetch(retryFailed);
+    return ds_wait_for_kernel_attempt(deadline);
+}
+
+static void ds_probe_network_until_ready(CFAbsoluteTime startedAt, NSUInteger attempt) {
+    if (g_networkWarmupState.load() != 1) return;
+
+    NSTimeInterval elapsed = MAX(0.0, CFAbsoluteTimeGetCurrent() - startedAt);
+    ds_set_stage([NSString stringWithFormat:ds_localized(@"Waiting for network (%.0f seconds, attempt %lu)"),
+                  elapsed, (unsigned long)attempt]);
+
+    NSMutableURLRequest *request = [NSMutableURLRequest
+        requestWithURL:[NSURL URLWithString:@"https://api.appledb.dev/ios/main.json.xz"]
+        cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+        timeoutInterval:8.0];
+    request.HTTPMethod = @"HEAD";
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request
+        completionHandler:^(__unused NSData *data, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse *httpResponse =
+                [response isKindOfClass:NSHTTPURLResponse.class] ? (NSHTTPURLResponse *)response : nil;
+            BOOL httpOK = !httpResponse ||
+                (httpResponse.statusCode >= 200 && httpResponse.statusCode < 400);
+            if (!error && response && httpOK) {
+                if (!ds_mark_network_warmup_ready()) return;
+                os_log(OS_LOG_DEFAULT, "[DSBridge] network access ready after %.0fs",
+                       CFAbsoluteTimeGetCurrent() - startedAt);
+                ds_set_error(@"");
+                ds_set_stage(ds_localized(@"Network connected; preparing kernelcache"));
+                ds_start_kernel_prefetch(YES);
+                return;
+            }
+
+            NSTimeInterval totalElapsed = MAX(0.0, CFAbsoluteTimeGetCurrent() - startedAt);
+            if (g_networkWarmupState.load() != 1) return;
+            if (totalElapsed >= kDSNetworkWarmupTimeout) {
+                int expected = 1;
+                if (!g_networkWarmupState.compare_exchange_strong(expected, 3)) return;
+                NSString *detail = error.localizedDescription;
+                if (!detail.length && httpResponse) {
+                    detail = [NSString stringWithFormat:@"HTTP %ld", (long)httpResponse.statusCode];
+                }
+                if (!detail.length) detail = ds_localized(@"No valid response");
+                os_log_error(OS_LOG_DEFAULT,
+                             "[DSBridge] network warm-up timed out: %{public}@", detail);
+                ds_set_stage(ds_localized(@"Network wait timed out"));
+                ds_set_error([NSString stringWithFormat:
+                    ds_localized(@"Could not connect after waiting %.0f seconds: %@\nCheck DarkSpeed network access and your connection, then retry."),
+                    totalElapsed, detail]);
+                dispatch_group_leave(ds_network_warmup_group());
+                return;
+            }
+
+            ds_set_stage([NSString stringWithFormat:
+                ds_localized(@"Network is not ready; waited %.0f seconds. Retrying in %.0f seconds"),
+                totalElapsed, kDSNetworkRetryDelay]);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
+                                         (int64_t)(kDSNetworkRetryDelay * NSEC_PER_SEC)),
+                           dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+                ds_probe_network_until_ready(startedAt, attempt + 1);
+            });
+        }] resume];
+}
+
+void DSBridgeWarmUpNetworkAndPrefetchKernelCache(void) {
+    BOOL hasBuiltinOffsets = install_builtin_kernel_symbol_offsets();
+    if (hasBuiltinOffsets || ds_has_symbol_offsets()) {
+        g_kernelPrefetchState.store(2);
+        ds_set_error(@"");
+        ds_set_stage(ds_localized(@"System data is ready"));
+        return;
+    }
+
+    BOOL shouldStartProbe = NO;
+    int expected = 0;
+    if (g_networkWarmupState.compare_exchange_strong(expected, 1)) {
+        shouldStartProbe = YES;
+    } else if (expected == 3) {
+        expected = 3;
+        shouldStartProbe = g_networkWarmupState.compare_exchange_strong(expected, 1);
+    }
+
+    if (shouldStartProbe) {
+        ds_set_error(@"");
+        ds_set_stage(ds_localized(@"Requesting network access"));
+        dispatch_group_enter(ds_network_warmup_group());
+        ds_probe_network_until_ready(CFAbsoluteTimeGetCurrent(), 1);
+    }
+
+    // The real request is the source of truth. Devices that do not present a
+    // regional network prompt can proceed immediately instead of being gated
+    // on the separate permission/connectivity probe.
+    ds_start_kernel_prefetch(YES);
+}
+
+static void ds_fail_enable(NSString *reason) {
+    os_log_error(OS_LOG_DEFAULT, "[DSBridge] enable failed: %{public}@", reason);
+    g_hudRequested.store(false);
+    g_hudActive.store(false);
     g_dsRunning.store(false);
-    g_dsProgress.store(1.0);
+    g_dsProgress.store(0.0);
+    ds_stop_keepalive();
+    ds_set_stage(ds_localized(@"Startup failed"));
     ds_set_error(reason ?: @"");
-    notify_post(NOTIFY_LAUNCHED_HUD);
     ds_post_progress();
 }
 
@@ -291,7 +475,7 @@ static void ds_append_wav_value(NSMutableData *data, const void *value, NSUInteg
 static NSURL *ds_silent_wav_url(void) {
     NSURL *cache = [[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory
                                                           inDomains:NSUserDomainMask].firstObject;
-    return [cache URLByAppendingPathComponent:@"trollspeed-silent.wav"];
+    return [cache URLByAppendingPathComponent:@"darkspeed-silent.wav"];
 }
 
 static BOOL ds_write_silent_wav(NSURL *url, NSError **error) {
@@ -337,14 +521,14 @@ static BOOL ds_start_keepalive(void) {
                           options:AVAudioSessionCategoryOptionMixWithOthers
                             error:&error] ||
             ![session setActive:YES error:&error]) {
-            ds_set_error([NSString stringWithFormat:@"后台保持启动失败：%@", error.localizedDescription]);
+            ds_set_error([NSString stringWithFormat:ds_localized(@"Background keep-alive failed: %@"), error.localizedDescription]);
             return;
         }
 
         NSURL *wavURL = ds_silent_wav_url();
         if (![[NSFileManager defaultManager] fileExistsAtPath:wavURL.path] &&
             !ds_write_silent_wav(wavURL, &error)) {
-            ds_set_error([NSString stringWithFormat:@"后台资源准备失败：%@", error.localizedDescription]);
+            ds_set_error([NSString stringWithFormat:ds_localized(@"Background resource preparation failed: %@"), error.localizedDescription]);
             return;
         }
 
@@ -354,7 +538,7 @@ static BOOL ds_start_keepalive(void) {
         [g_keepAlivePlayer prepareToPlay];
         started = [g_keepAlivePlayer play];
         if (!started) {
-            ds_set_error([NSString stringWithFormat:@"后台保持播放失败：%@", error.localizedDescription]);
+            ds_set_error([NSString stringWithFormat:ds_localized(@"Background keep-alive playback failed: %@"), error.localizedDescription]);
             g_keepAlivePlayer = nil;
         }
     });
@@ -878,7 +1062,7 @@ static BOOL ds_apply_snapshot_container(RemoteCall *process, BOOL hideAtSnapshot
                                    g_remoteContainer, YES);
     g_lastHideAtSnapshot = hideAtSnapshot;
     if (hideAtSnapshot && !canHide) {
-        ds_append_checkpoint(@"截图隐藏容器不可用，已保持普通显示");
+        ds_append_checkpoint(ds_localized(@"Screenshot-hiding container unavailable; using normal display"));
     }
     return !hideAtSnapshot || canHide;
 }
@@ -1223,7 +1407,7 @@ static void ds_register_hud_notifications(void) {
         if (!g_hudActive.load()) return;
         NSDictionary *preferences = ds_hud_preferences();
         ds_append_checkpoint([NSString stringWithFormat:
-            @"HUD 设置已刷新 position=%@ size=%@ snapshot=%@",
+            @"HUD settings refreshed position=%@ size=%@ snapshot=%@",
             preferences[UIInterfaceOrientationIsLandscape(ds_interface_orientation())
                 ? HUDUserDefaultsKeySelectedModeLandscape
                 : HUDUserDefaultsKeySelectedMode] ?: @"default",
@@ -1290,18 +1474,19 @@ BOOL DSBridgeAdoptFromEnvironment(void) {
     }
 
     if (!ds_adopt_krw(control, readWrite, kernelBase, kernelSlide)) {
-        ds_set_error(@"DS 环境接入失败。");
+        ds_set_error(ds_localized(@"Could not adopt the DarkSpeed environment."));
         return NO;
     }
 
     init_offsets();
     offsets_init();
-    if (!emergencyfixfunctiontobereplacedlateronquestionmark()) {
-        ds_set_error(@"DS 系统数据不可用。");
+    install_builtin_kernel_symbol_offsets();
+    if (!ds_has_symbol_offsets() && !emergencyfixfunctiontobereplacedlateronquestionmark()) {
+        ds_set_error(ds_localized(@"DarkSpeed system data is unavailable."));
         return NO;
     }
     g_dsReady.store(true);
-    ds_set_stage(@"DS 初始化完成");
+    ds_set_stage(ds_localized(@"DarkSpeed initialization complete"));
     ds_set_error(@"");
     os_log(OS_LOG_DEFAULT, "[DSBridge] adopted DarkSword KRW for SpringBoard HUD");
     return YES;
@@ -1320,28 +1505,28 @@ BOOL DSBridgeBootstrap(void) {
     // all offsets = 0 and retries forever (stuck at ~50%).
     init_offsets();
     offsets_init();
+    // Exact build-scoped symbol offsets must be available before ds_run():
+    // its final self-proc lookup already needs kernproc/allproc.
+    install_builtin_kernel_symbol_offsets();
 
-    ds_set_stage(@"正在初始化 DS");
+    ds_set_stage(ds_localized(@"Initializing DarkSpeed"));
     int result = ds_run();
     if (result != 0 || !ds_is_ready()) {
-        ds_set_error([NSString stringWithFormat:@"DS 初始化失败（%d）", result]);
+        ds_set_error([NSString stringWithFormat:ds_localized(@"DarkSpeed initialization failed (%d)"), result]);
         return NO;
     }
 
     g_dsReady.store(true);
-    ds_set_stage(@"DS 初始化完成");
+    ds_set_stage(ds_localized(@"DarkSpeed initialization complete"));
     ds_set_error(@"");
     os_log(OS_LOG_DEFAULT, "[DSBridge] DarkSword ready");
     return YES;
 }
 
 static void ds_finish_disable(void) {
-    ds_set_stage(@"正在关闭 HUD");
+    ds_set_stage(ds_localized(@"Closing HUD"));
     ds_unregister_hud_notifications();
     ds_stop_rate_timer();
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        if (DSInProcessHUDIsEnabled()) DSInProcessHUDSetEnabled(NO);
-    });
     RemoteCall *process = g_springBoard;
     g_springBoard = nil;
     g_hudActive.store(false);
@@ -1377,7 +1562,7 @@ static void ds_finish_disable(void) {
     g_lastHideAtSnapshot = NO;
     ds_reset_remote_symbol_cache();
     ds_stop_keepalive();
-    ds_set_stage(@"HUD 已关闭");
+    ds_set_stage(ds_localized(@"HUD closed"));
     notify_post(NOTIFY_RELOAD_APP);
     os_log(OS_LOG_DEFAULT, "[DSBridge] SpringBoard HUD disabled");
 }
@@ -1386,7 +1571,7 @@ static void ds_finish_enable(void) {
     if (!g_hudRequested.load()) return;
     g_dsRunning.store(true);
     g_dsProgress.store(0.0);
-    ds_set_stage(@"准备启动");
+    ds_set_stage(ds_localized(@"Preparing startup"));
     ds_post_progress();
 
     if (!ds_start_keepalive()) {
@@ -1395,34 +1580,28 @@ static void ds_finish_enable(void) {
         ds_post_progress();
         return;
     }
-    if (!DSBridgeBootstrap() || !g_hudRequested.load()) {
-        g_hudRequested.store(false);
-        g_dsRunning.store(false);
-        ds_stop_keepalive();
-        ds_post_progress();
+
+    g_dsProgress.store(0.03);
+    ds_set_stage(ds_localized(@"Preparing system data"));
+    ds_post_progress();
+    if (!ds_wait_for_kernel_prefetch(240.0, YES)) {
+        NSString *preparationError = DSBridgeLastError();
+        ds_fail_enable(preparationError.length > 0 ? preparationError :
+            ds_localized(@"Kernelcache download or parsing failed. Network access may still be pending. Check network access and retry; if it still fails, reinstall over the existing app. Restart the device only as a last resort."));
         return;
     }
 
-    // After ds_run, resolve kernelcache offsets (download when
-    // missing), then use procbyname("SpringBoard") for RemoteCall.
-    g_dsProgress.store(0.92);
-    ds_set_stage(@"准备系统数据");
-    ds_post_progress();
-    if (!ds_prepare_kernel_offsets()) {
-        ds_finish_enable_inprocess(
-            @"已启用进程内 HUD（安全模式）\n"
-            @"系统数据准备失败，已跳过 SpringBoard 连接。");
+    if (!DSBridgeBootstrap() || !g_hudRequested.load()) {
+        ds_fail_enable(ds_localized(@"DarkSpeed startup failed. Retry or reinstall over the existing app; restart the device only as a last resort."));
         return;
     }
 
     g_dsProgress.store(0.96);
-    ds_set_stage(@"定位 SpringBoard");
+    ds_set_stage(ds_localized(@"Locating SpringBoard"));
     ds_post_progress();
     uint64_t sbProc = proc_find_by_name("SpringBoard");
     if (!sbProc) {
-        ds_finish_enable_inprocess(
-            @"已启用进程内 HUD（安全模式）\n"
-            @"SpringBoard 尚未就绪，已跳过连接。");
+        ds_fail_enable(ds_localized(@"SpringBoard is not ready, so the HUD cannot be created. Retry or reinstall over the existing app; restart the device only as a last resort."));
         return;
     }
 
@@ -1430,40 +1609,42 @@ static void ds_finish_enable(void) {
         os_log(OS_LOG_DEFAULT, "[DSBridge] SpringBoard proc=0x%llx self=0x%llx — starting RemoteCall",
                (unsigned long long)sbProc, (unsigned long long)ds_get_our_proc());
         g_dsProgress.store(0.98);
-        ds_set_stage(@"连接 SpringBoard");
+        ds_set_stage(ds_localized(@"Connecting to SpringBoard"));
         ds_reset_remote_symbol_cache();
         g_springBoard = [[RemoteCall alloc] initWithProcess:@"SpringBoard" useMigFilterBypass:NO];
         if (!g_springBoard || !g_springBoard.trojanMem || g_springBoard.pid <= 1) {
             NSString *remoteError = [RemoteCall lastInitError];
             if (remoteError.length == 0 && g_springBoard) remoteError = g_springBoard.lastError;
             if (remoteError.length == 0) remoteError = @"RemoteCall init failed (no detail)";
-            ds_append_checkpoint([@"SpringBoard 连接失败：" stringByAppendingString:remoteError]);
+            ds_append_checkpoint([ds_localized(@"SpringBoard connection failed: ") stringByAppendingString:remoteError]);
             g_springBoard = nil;
-            ds_finish_enable_inprocess([NSString stringWithFormat:
-                @"已启用进程内 HUD（安全模式）\nSpringBoard 连接失败\n%@", remoteError]);
+            ds_fail_enable([NSString stringWithFormat:
+                ds_localized(@"SpringBoard connection failed: %@\nRetry or reinstall over the existing app; restart the device only as a last resort."),
+                remoteError]);
             return;
         }
 
         g_dsProgress.store(0.99);
-        ds_set_stage(@"创建 SpringBoard HUD");
+        ds_set_stage(ds_localized(@"Creating SpringBoard HUD"));
         g_remoteLabel = ds_create_springboard_hud(g_springBoard);
         if (!g_remoteLabel) {
             [g_springBoard destroyRemoteCall];
             g_springBoard = nil;
-            ds_finish_enable_inprocess(@"已启用进程内 HUD（安全模式）\nSpringBoard HUD 创建失败");
+            ds_fail_enable(ds_localized(@"SpringBoard HUD creation failed. Retry or reinstall over the existing app; restart the device only as a last resort."));
             return;
         }
     } @catch (NSException *exception) {
         g_springBoard = nil;
-        ds_finish_enable_inprocess([NSString stringWithFormat:
-            @"已启用进程内 HUD（安全模式）\nSpringBoard HUD 异常：%@", exception.reason]);
+        ds_fail_enable([NSString stringWithFormat:
+            ds_localized(@"SpringBoard HUD exception: %@\nRetry or reinstall over the existing app; restart the device only as a last resort."),
+            exception.reason]);
         return;
     }
 
     g_hudActive.store(true);
     g_dsRunning.store(false);
     g_dsProgress.store(1.0);
-    ds_set_stage(@"SpringBoard HUD 已启动");
+    ds_set_stage(ds_localized(@"SpringBoard HUD started"));
     ds_set_error(@"");
     ds_start_rate_timer();
     ds_register_hud_notifications();
@@ -1503,12 +1684,13 @@ BOOL DSBridgeIsRunning(void) {
 
 BOOL DSBridgeCompiledIn(void) { return NO; }
 BOOL DSBridgeIsReady(void) { return NO; }
+void DSBridgeWarmUpNetworkAndPrefetchKernelCache(void) {}
 BOOL DSBridgeAdoptFromEnvironment(void) {
-    ds_set_error(@"当前构建未启用 DS。");
+    ds_set_error(ds_localized(@"DarkSpeed is not enabled in this build."));
     return NO;
 }
 BOOL DSBridgeBootstrap(void) {
-    ds_set_error(@"当前构建未启用 DS。");
+    ds_set_error(ds_localized(@"DarkSpeed is not enabled in this build."));
     return NO;
 }
 BOOL DSBridgeSetHUDEnabled(BOOL enabled) {
@@ -1532,5 +1714,5 @@ NSString *DSBridgeStage(void) {
     os_unfair_lock_lock(&g_errorLock);
     NSString *stage = [g_dsStage copy] ?: @"";
     os_unfair_lock_unlock(&g_errorLock);
-    return stage;
+    return [stage isEqualToString:@"Waiting to start"] ? ds_localized(@"Waiting to start") : stage;
 }
