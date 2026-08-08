@@ -1,67 +1,66 @@
-# TrollSpeed
+# DarkSpeed
 
-[![Xcode - Build and Analyze](https://github.com/Lessica/TrollSpeed/actions/workflows/build-analyse.yml/badge.svg)](https://github.com/Lessica/TrollSpeed/actions/workflows/build-analyse.yml)
-[![Analyse Commands](https://github.com/Lessica/TrollSpeed/actions/workflows/analyse-commands.yml/badge.svg)](https://github.com/Lessica/TrollSpeed/actions/workflows/analyse-commands.yml)
-[![Build Release](https://github.com/Lessica/TrollSpeed/actions/workflows/build-release.yml/badge.svg)](https://github.com/Lessica/TrollSpeed/actions/workflows/build-release.yml)
-![Latest Release](https://img.shields.io/github/v/release/Lessica/TrollSpeed)
-![MIT License](https://img.shields.io/github/license/Lessica/TrollSpeed)
+[简体中文](README_ZH.md) · [Original TrollSpeed](README_TrollSpeed.md) · [Repository](https://github.com/huami1314/DarkSpeed)
 
-[now-on-havoc]: https://havoc.app/package/trollspeed 
+DarkSpeed is an IPA-only network-speed HUD for SpringBoard. It retains TrollSpeed's familiar display and settings while providing its own signed-app runtime and SpringBoard renderer.
 
-[<img width="150" src="https://docs.havoc.app/img/badges/get_square.svg" />][now-on-havoc]
+The HUD supports live upload and download speeds, left/center/right placement, configurable size and units, lock-screen display, rotation, FPS text, and optional screenshot hiding. Presentation settings update while the HUD is running.
 
-Shows upload &amp; download speed below the status bar.
+> [!WARNING]
+> DarkSpeed uses experimental low-level techniques. Compatibility depends on the exact device and iOS build. Back up important data before testing. DarkSpeed never restarts the device automatically.
 
-Tested and expected to work on all iOS versions supported by opa334’s TrollStore.
+DarkSpeed must be signed with a valid certificate and provisioning profile before installation. After enabling the HUD, you can return to the Home Screen and use other apps; DarkSpeed remains alive in the background. Do not force-quit or swipe DarkSpeed away while the HUD is enabled.
 
-## How it works?
+## Support
 
-[TrollStore](https://github.com/opa334/TrollStore) + [UIDaemon](https://github.com/limneos/UIDaemon) + [NetworkSpeed13](https://github.com/lwlsw/NetworkSpeed13) + (some magic)
-\=
+| iOS Version | Support Status |
+|---|---|
+| iOS 16.x | Possible ¹ |
+| iOS 16.7.2 | Tested, needs more testing |
+| iOS 17.0 – iOS 18.7.1 | Supported |
+| iOS 18.7.2+ | Not Supported |
+| iOS 26.0 – iOS 26.0.1 | Supported |
+| iOS 26.1+ | Not Supported |
 
-- An TrollStore app to spawn HUD process with root privilege.
-- Don’t call `waitpid` to that process. Let it go.
-- A HUD app with entitlements from `assistivetouchd` to display and persist global windows.
+¹ iOS 16.x may work, but not every device/build combination has been verified.
 
-## How to build?
+Compatibility issues may still occur on iOS 18.7 and 18.7.1. “Supported” means the required path is implemented; it does not guarantee that every device/build combination has been tested.
 
-- Use [theos](https://github.com/theos/theos) to compile.
-  - `FINALPACKAGE=1 make package`
-- You'll get a `.tipa` file in `./packages` folder.
-- Don't like **theos**? Use `./build.sh` to build with Xcode.
+## First launch
 
-## Caveats
+- On CH/A devices, allow network access when prompted.
+- After the DarkSpeed HUD starts successfully, do not close or force-quit the app.
 
-- Spawn with root privileges is **required**. Otherwise, the HUD process will be killed by SpringBoard when unlocking device.
-- TrollSpeed will observe its app removal and terminate its HUD.
+## Build
 
-## Notes
+The repository builds an IPA only; it does not contain a jailbreak tweak or PreferenceBundle target.
 
-- Please give me feedback if you find any issues &amp; bugs, or have any suggestions.
-- Give me a star 🌟 if you like this project. Thanks!
+To build a signed IPA with the signing settings configured in Xcode:
 
-## Screenshots
+```sh
+./build-darkspeed.sh
+```
 
-![preview](screenshots/preview.jpeg)
+For an unsigned IPA that will be signed later:
 
-![IMG_0011](https://github.com/user-attachments/assets/716d8c62-5032-4bec-8090-fd7fc02e11b4)
+```sh
+DARKSPEED_UNSIGNED=1 ./build-darkspeed.sh
+```
 
-## Special Thanks
+The output is `packages/DarkSpeed_1.0-1.ipa`. Version `1.0-1` maps to marketing version `1.0` and build `1`.
 
-- [KIF](https://github.com/kif-framework/KIF)
-- [SPLarkController](https://github.com/ivanvorobei/SPLarkController) by [@ivanvorobei_](https://twitter.com/ivanvorobei_)
-- [TrollStore](https://github.com/opa334/TrollStore) by [@opa334dev](https://twitter.com/opa334dev)
-- [UIDaemon](https://github.com/limneos/UIDaemon) by [@limneos](https://twitter.com/limneos)
-- [NetworkSpeed13](https://github.com/lwlsw/NetworkSpeed13) by [@johnzarodev](https://twitter.com/johnzarodev)
-- [SnapshotSafeView](https://github.com/Stampoo/SnapshotSafeView) by [Ilya knyazkov](https://github.com/Stampoo)
+## Credits
+
+- [Lara](https://github.com/rooootdev/lara) for the kernel exploit implementation and RemoteCall reference.
+- [i_82 / Lessica](https://github.com/Lessica) for the original [TrollSpeed](https://github.com/Lessica/TrollSpeed).
+- opa334 for the kernel exploit PoC.
+- ChOma and XPF.
+- AppInstaller iOS for help with offsets.
+- AlfieCG for libgrabkernel2.
+- [Everyone who contributed to Lara](https://github.com/rooootdev/lara/graphs/contributors).
+
+The original repository history is retained so prior authorship and contributions remain visible.
 
 ## License
 
-TrollSpeed is licensed under the [MIT License](LICENSE).
-
-### Localization
-
-To add a language, create a new `.lproj` folder in `Resources`.
-
-- en/zh-Hans [@Lessica](https://github.com/Lessica)
-- es [@Deci8BelioS](https://github.com/Deci8BelioS)
+See [LICENSE](LICENSE). Vendored components remain subject to their own licenses and notices.
