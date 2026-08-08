@@ -2,6 +2,8 @@
 
 [English](README.md) · [原版 TrollSpeed](README_TrollSpeed.md) · [项目仓库](https://github.com/huami1314/DarkSpeed)
 
+当前版本：**1.0-1**
+
 DarkSpeed 是一个仅通过 IPA 安装、直接显示在 SpringBoard 上的网速悬浮窗。它保留 TrollSpeed 熟悉的显示和设置，同时提供独立的签名应用运行时与 SpringBoard 渲染器。
 
 悬浮窗支持实时上传/下载速度、左中右位置、尺寸与单位调整、锁屏显示、横竖屏适配、FPS 文本以及可选的截图隐藏。影响显示的设置会在悬浮窗运行时实时更新。
@@ -25,6 +27,8 @@ DarkSpeed 必须使用有效证书和描述文件签名后安装。悬浮窗启�
 ¹ iOS 16.x 在原理上可能可用，但尚未覆盖所有设备与构建组合。
 
 iOS 18.7 与 18.7.1 仍可能出现兼容性问题。“支持”表示对应路径已经实现，不代表每一种设备与构建组合都完成了实机验证。
+
+DarkSpeed 支持 DarkSword 所支持的全部设备。由于 MTE，DarkSpeed 无法在 M5、A19 和 A19 Pro 设备上工作。上述 iOS 支持范围仅适用于兼容硬件。
 
 ## 首次启动
 

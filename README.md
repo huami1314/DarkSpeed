@@ -2,6 +2,8 @@
 
 [简体中文](README_ZH.md) · [Original TrollSpeed](README_TrollSpeed.md) · [Repository](https://github.com/huami1314/DarkSpeed)
 
+Current version: **1.0-1**
+
 DarkSpeed is an IPA-only network-speed HUD for SpringBoard. It retains TrollSpeed's familiar display and settings while providing its own signed-app runtime and SpringBoard renderer.
 
 The HUD supports live upload and download speeds, left/center/right placement, configurable size and units, lock-screen display, rotation, FPS text, and optional screenshot hiding. Presentation settings update while the HUD is running.
@@ -25,6 +27,8 @@ DarkSpeed must be signed with a valid certificate and provisioning profile befor
 ¹ iOS 16.x may work, but not every device/build combination has been verified.
 
 Compatibility issues may still occur on iOS 18.7 and 18.7.1. “Supported” means the required path is implemented; it does not guarantee that every device/build combination has been tested.
+
+DarkSpeed supports all devices supported by DarkSword. It will not work on M5, A19, or A19 Pro devices due to MTE. The iOS support table applies only to compatible hardware.
 
 ## First launch
 
