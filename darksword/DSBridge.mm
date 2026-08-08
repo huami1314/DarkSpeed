@@ -115,6 +115,7 @@ static const CGFloat kDSHUDMinCornerRadius = 4.5;
 static const CGFloat kDSHUDMaxCornerRadius = 5.0;
 static const CGFloat kDSHUDInactiveOpacity = 0.667;
 static const NSTimeInterval kDSHUDFocusDuration = 3.0;
+static const double kDSHUDWindowLevel = 10000010.0;
 static const CACornerMask kDSCornerMaskBottom =
     kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner;
 static const CACornerMask kDSCornerMaskAll =
@@ -140,7 +141,6 @@ static CFAbsoluteTime g_focusUntil = 0;
 static CFIndex g_previousDirtyFrameCount = 0;
 static BOOL g_needsFPSBaselineReset = YES;
 static std::atomic<int> g_remoteOrientation(UIInterfaceOrientationUnknown);
-static std::atomic_bool g_deviceLocked(false);
 static int g_reloadHUDToken = -1;
 static int g_lockStateToken = -1;
 static NSUInteger g_lastPresentationSignature = 0;
@@ -928,7 +928,9 @@ static uint64_t ds_create_springboard_hud(RemoteCall *process) {
 
     ds_remote_set_rect_on_main(process, window, "setFrame:", presentation.windowFrame);
     ds_perform_on_springboard_main(process, window, ds_remote_sel(process, "setWindowScene:"), scene, YES);
-    ds_remote_set_double_on_main(process, window, "setWindowLevel:", UIWindowLevelStatusBar + 1.0);
+    // Match the original hosted HUD. Status-bar level is below SpringBoard's
+    // CoverSheet, so it disappears as soon as the device enters the lock UI.
+    ds_remote_set_double_on_main(process, window, "setWindowLevel:", kDSHUDWindowLevel);
     ds_remote_set_u64_on_main(process, window, "setUserInteractionEnabled:", 0);
     ds_remote_set_u64_on_main(process, window, "setOpaque:", 0);
 
@@ -1068,7 +1070,7 @@ static BOOL ds_apply_remote_presentation(RemoteCall *process,
     }
 
     BOOL hideForLandscape = presentation->landscape && !presentation->followsRotation;
-    BOOL shouldHide = hideForLandscape || g_deviceLocked.load();
+    BOOL shouldHide = hideForLandscape;
     if (shouldHide != g_lastWindowHidden) {
         ds_remote_set_u64_on_main(process, g_remoteWindow, "setHidden:", shouldHide ? 1 : 0);
         g_lastWindowHidden = shouldHide;
@@ -1241,20 +1243,22 @@ static void ds_register_hud_notifications(void) {
         BOOL passcodeSet = NO;
         SBGetScreenLockStatus(port, &locked, &passcodeSet);
         (void)passcodeSet;
-        g_deviceLocked.store(locked);
         if (!g_hudActive.load() || !g_springBoard || !g_remoteWindow) return;
-        if (locked) {
-            ds_remote_set_u64_on_main(g_springBoard, g_remoteWindow, "setHidden:", 1);
-            g_lastWindowHidden = YES;
-        } else {
+
+        // Keep the SpringBoard-hosted HUD above CoverSheet while locked.
+        // Reapply the level during the transition because SpringBoard may
+        // reorder its own windows as the lock scene becomes active.
+        ds_remote_set_double_on_main(g_springBoard, g_remoteWindow,
+                                     "setWindowLevel:", kDSHUDWindowLevel);
+        if (!locked) {
             g_previousInput = 0;
             g_previousOutput = 0;
             g_previousSampleTime = 0;
             g_needsFPSBaselineReset = YES;
             g_focusUntil = CFAbsoluteTimeGetCurrent() + kDSHUDFocusDuration;
-            g_lastWindowHidden = YES;
-            ds_update_rate();
         }
+        g_lastWindowHidden = YES;
+        ds_update_rate();
     });
 }
 
