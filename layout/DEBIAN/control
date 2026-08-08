@@ -1,9 +1,0 @@
-Package: ch.xxtou.hudapp.jb
-Name: TrollSpeed JB
-Version: 2.0-13
-Section: Tweaks
-Depends: firmware (>= 14.0)
-Architecture: iphoneos-arm
-Author: Lessica <82flex@gmail.com>
-Maintainer: Lessica <82flex@gmail.com>
-Description: Troll your speed, but jailbroken.

@@ -10,22 +10,8 @@
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
 
-#if !TARGET_OS_SIMULATOR && !defined(DISABLE_PATH_REDIRECTION)
-    #if __has_include(<roothide.h>)
-        #import <roothide.h>
-        #ifndef JBROOT_PATH_CSTRING
-            #define JBROOT_PATH_CSTRING(cPath) jbroot(cPath)
-        #endif
-        #ifndef JBROOT_PATH_NSSTRING
-            #define JBROOT_PATH_NSSTRING(nsPath) jbroot(nsPath)
-        #endif
-    #elif __has_include(<libroot.h>)
-        #import <libroot.h>
-    #endif
-#else
     #define JBROOT_PATH_CSTRING(cPath) cPath
     #define JBROOT_PATH_NSSTRING(nsPath) nsPath
-#endif
     #import <os/log.h>
 
     #import "NSUserDefaults+Private.h"

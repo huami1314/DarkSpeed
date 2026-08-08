@@ -15,7 +15,7 @@
 #import "HUDPresetPosition.h"
 #import "HUDRootViewController.h"
 #import "HUDBackdropLabel.h"
-#import "TrollSpeed-Swift.h"
+#import "DarkSpeed-Swift.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -753,58 +753,23 @@ static const CACornerMask kCornerMaskAll = kCALayerMinXMinYCorner | kCALayerMaxX
     [self saveUserDefaults];
 }
 
-#define PREFS_PATH "/var/mobile/Library/Preferences/ch.xxtou.hudapp.prefs.plist"
-
-- (NSDictionary *)extraUserDefaultsDictionary {
-    static BOOL isJailbroken = NO;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-      isJailbroken = [[NSFileManager defaultManager]
-          fileExistsAtPath:JBROOT_PATH_NSSTRING(@"/Library/PreferenceBundles/TrollSpeedPrefs.bundle")];
-    });
-    if (!isJailbroken) {
-        return nil;
-    }
-    return [NSDictionary dictionaryWithContentsOfFile:JBROOT_PATH_NSSTRING(@PREFS_PATH)];
-}
-
 - (BOOL)usesCustomFontSize {
-    NSDictionary *extraUserDefaults = [self extraUserDefaultsDictionary];
-    if (extraUserDefaults) {
-        return [extraUserDefaults[HUDUserDefaultsKeyUsesCustomFontSize] boolValue];
-    }
     return [GetStandardUserDefaults() boolForKey:HUDUserDefaultsKeyUsesCustomFontSize];
 }
 
 - (CGFloat)realCustomFontSize {
-    NSDictionary *extraUserDefaults = [self extraUserDefaultsDictionary];
-    if (extraUserDefaults) {
-        return [extraUserDefaults[HUDUserDefaultsKeyRealCustomFontSize] doubleValue];
-    }
     return [GetStandardUserDefaults() doubleForKey:HUDUserDefaultsKeyRealCustomFontSize];
 }
 
 - (BOOL)usesCustomOffset {
-    NSDictionary *extraUserDefaults = [self extraUserDefaultsDictionary];
-    if (extraUserDefaults) {
-        return [extraUserDefaults[HUDUserDefaultsKeyUsesCustomOffset] boolValue];
-    }
     return [GetStandardUserDefaults() boolForKey:HUDUserDefaultsKeyUsesCustomOffset];
 }
 
 - (CGFloat)realCustomOffsetX {
-    NSDictionary *extraUserDefaults = [self extraUserDefaultsDictionary];
-    if (extraUserDefaults) {
-        return [extraUserDefaults[HUDUserDefaultsKeyRealCustomOffsetX] doubleValue];
-    }
     return [GetStandardUserDefaults() doubleForKey:HUDUserDefaultsKeyRealCustomOffsetX];
 }
 
 - (CGFloat)realCustomOffsetY {
-    NSDictionary *extraUserDefaults = [self extraUserDefaultsDictionary];
-    if (extraUserDefaults) {
-        return [extraUserDefaults[HUDUserDefaultsKeyRealCustomOffsetY] doubleValue];
-    }
     return [GetStandardUserDefaults() doubleForKey:HUDUserDefaultsKeyRealCustomOffsetY];
 }
 

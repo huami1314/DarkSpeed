@@ -1,27 +1,24 @@
-// DarkSword configuration overlay for TrollSpeed (device).
+// DarkSword configuration overlay for DarkSpeed (device).
 
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) USE_DARKSWORD=1
 // DarkSword RemoteCall needs a PAC-capable arm64e launch context.
 ARCHS = arm64e
 ONLY_ACTIVE_ARCH = NO
 
-HEADER_SEARCH_PATHS = $(inherited) $(SRCROOT)/darksword $(SRCROOT)/Vendor/darksword-headers $(SRCROOT)/Vendor/darksword-lib/choma $(SRCROOT)/Vendor/darksword-kexploit $(SRCROOT)/Vendor/darksword-kexploit/pe $(SRCROOT)/Vendor/darksword-kexploit/TaskRop $(SRCROOT)/headers $(THEOS)/vendor/include
+HEADER_SEARCH_PATHS = $(inherited) $(SRCROOT)/darksword $(SRCROOT)/Vendor/darksword-headers $(SRCROOT)/Vendor/darksword-lib/choma $(SRCROOT)/Vendor/darksword-kexploit $(SRCROOT)/Vendor/darksword-kexploit/pe $(SRCROOT)/Vendor/darksword-kexploit/TaskRop $(SRCROOT)/headers
 USER_HEADER_SEARCH_PATHS = $(inherited) $(SRCROOT)/darksword $(SRCROOT)/Vendor/darksword-headers $(SRCROOT)/Vendor/darksword-lib/choma $(SRCROOT)/Vendor/darksword-kexploit $(SRCROOT)/Vendor/darksword-kexploit/pe $(SRCROOT)/Vendor/darksword-kexploit/TaskRop
 
 LIBRARY_SEARCH_PATHS = $(inherited) $(SRCROOT)/Vendor/darksword-lib-thin
 OTHER_LDFLAGS = $(inherited) -lxpf -lgrabkernel2 -framework AVFoundation
 LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks
 
-// Signed for the same team/device as DarkSword autostart builds.
+// DarkSpeed development signing.
 DEVELOPMENT_TEAM = 6LMF23FAGL
 CODE_SIGN_STYLE = Automatic
-// Reuse an existing App ID — free accounts are capped at 10 new IDs / 7 days.
-PRODUCT_BUNDLE_IDENTIFIER = com.huami.respring
+PRODUCT_BUNDLE_IDENTIFIER = com.huami.darkspeed
 IPHONEOS_DEPLOYMENT_TARGET = 16.0
 SKIP_APPINTENTSSSU_VALIDATION = YES
 
 CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist
-CODE_SIGNING_ALLOWED = YES
-CODE_SIGNING_REQUIRED = YES
 
 ENABLE_USER_SCRIPT_SANDBOXING = NO

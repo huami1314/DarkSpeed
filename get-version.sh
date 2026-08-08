@@ -1,11 +1,24 @@
 #!/bin/sh
 
-# This script reads the package version from layout/DEBIAN/control.
-VERSION=$(grep -m1 '^Version:' layout/DEBIAN/control | awk '{print $2}' | tr -d '[:space:]')
+set -eu
 
-if [ -z "$VERSION" ]; then
-    echo "Error: Could not read Version from layout/DEBIAN/control" >&2
+project_file="DarkSpeed.xcodeproj/project.pbxproj"
+marketing_version=$(awk -F ' = ' '/MARKETING_VERSION =/ {
+    value = $2
+    sub(/;.*/, "", value)
+    print value
+    exit
+}' "$project_file")
+build_version=$(awk -F ' = ' '/CURRENT_PROJECT_VERSION =/ {
+    value = $2
+    sub(/;.*/, "", value)
+    print value
+    exit
+}' "$project_file")
+
+if [ -z "$marketing_version" ] || [ -z "$build_version" ]; then
+    echo "Unable to read the DarkSpeed version from $project_file" >&2
     exit 1
 fi
 
-echo "$VERSION"
+printf '%s-%s\n' "$marketing_version" "$build_version"

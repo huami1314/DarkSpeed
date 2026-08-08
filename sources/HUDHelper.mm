@@ -69,8 +69,6 @@ BOOL IsHUDEnabled(void)
     return WEXITSTATUS(status) != 0;
 }
 
-#define LAUNCH_DAEMON_PATH JBROOT_PATH_CSTRING("/Library/LaunchDaemons/ch.xxtou.hudservices.plist")
-
 void SetHUDEnabled(BOOL isEnabled)
 {
     notify_post(NOTIFY_DISMISSAL_HUD);
@@ -94,40 +92,6 @@ void SetHUDEnabled(BOOL isEnabled)
     posix_spawnattr_set_persona_uid_np(&attr, 0);
     posix_spawnattr_set_persona_gid_np(&attr, 0);
 #endif
-
-    if (access(LAUNCH_DAEMON_PATH, F_OK) == 0)
-    {
-        if (!isEnabled) {
-            [NSThread sleepForTimeInterval:FADE_OUT_DURATION];
-        }
-
-        int rc;
-        pid_t task_pid;
-        static const char *executablePath = JBROOT_PATH_CSTRING("/usr/bin/launchctl");
-        const char *args[] = { executablePath, isEnabled ? "load" : "unload", LAUNCH_DAEMON_PATH, NULL };
-        rc = posix_spawn(&task_pid, executablePath, NULL, &attr, (char **)args, environ);
-        if (rc != 0) {
-            log_debug(OS_LOG_DEFAULT, "posix_spawn error %s", strerror(rc));
-        }
-
-        posix_spawnattr_destroy(&attr);
-
-        if (rc != 0) {
-            return;
-        }
-
-        log_debug(OS_LOG_DEFAULT, "spawned %{public}s -exit pid = %{public}d", executablePath, task_pid);
-
-        int status;
-        do {
-            if (waitpid(task_pid, &status, 0) != -1)
-            {
-                log_debug(OS_LOG_DEFAULT, "child status %d", WEXITSTATUS(status));
-            }
-        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-
-        return;
-    }
 
     static char *executablePath = NULL;
     uint32_t executablePathSize = 0;
@@ -188,42 +152,6 @@ void SetHUDEnabled(BOOL isEnabled)
         } while (!WIFEXITED(status) && !WIFSIGNALED(status));
     }
 }
-
-#if DEBUG
-void SimulateMemoryPressure(void)
-{
-    static NSString *nsExecutablePath = nil;
-    static const char *executablePath = NULL;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSBundle *mainBundle = [NSBundle mainBundle];
-        nsExecutablePath = [mainBundle pathForResource:@"memory_pressure" ofType:nil];
-        if (nsExecutablePath) {
-            executablePath = [nsExecutablePath UTF8String];
-        }
-    });
-
-    if (!executablePath) {
-        return;
-    }
-
-    posix_spawnattr_t attr;
-    posix_spawnattr_init(&attr);
-
-#if !TARGET_OS_SIMULATOR
-    posix_spawnattr_set_persona_np(&attr, 99, POSIX_SPAWN_PERSONA_FLAGS_OVERRIDE);
-    posix_spawnattr_set_persona_uid_np(&attr, 0);
-    posix_spawnattr_set_persona_gid_np(&attr, 0);
-#endif
-
-    pid_t task_pid;
-    const char *args[] = { executablePath, "-l", "critical", NULL };
-    posix_spawn(&task_pid, executablePath, NULL, &attr, (char **)args, environ);
-    posix_spawnattr_destroy(&attr);
-
-    log_debug(OS_LOG_DEFAULT, "spawned %{public}s -l critical pid = %{public}d", executablePath, task_pid);
-}
-#endif
 
 NSUserDefaults *GetStandardUserDefaults(void)
 {

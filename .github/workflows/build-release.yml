@@ -8,96 +8,59 @@ on:
       - "v*.*.*"
 
 env:
-  THEOS: ''
   PKG_VERSION: ''
   XCODE_VERSION: '15.4'
 
+permissions:
+  contents: write
+
 jobs:
   build:
-    name: Build and upload release package for TrollStore
+    name: Build and upload DarkSpeed IPA
     runs-on: macos-14
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
       - name: Setup Xcode version
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: ${{ env.XCODE_VERSION }}
 
-      - name: Install Homebrew dependencies
-        run: |
-          HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew install dpkg make libplist openssl@3 ldid-procursus
-          echo "/usr/local/opt/make/libexec/gnubin" >> $GITHUB_PATH
-
-      - name: Checkout roothide/theos
-        uses: actions/checkout@v4
-        with:
-          repository: roothide/theos
-          path: theos
-          submodules: recursive
-
-      - name: Add THEOS environment variables
-        run: |
-          rm -rf $GITHUB_WORKSPACE/theos/sdks
-          echo "THEOS=$GITHUB_WORKSPACE/theos" >> $GITHUB_ENV
-
-      - name: Checkout theos/sdks
-        uses: actions/checkout@v4
-        with:
-          repository: theos/sdks
-          ref: master
-          path: ${{ env.THEOS }}/sdks
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          repository: Lessica/TrollSpeed
-          ref: main
-          path: TrollSpeed
-          submodules: recursive
-
       - name: Setup build environment
         run: |
-          echo "Available SDKs: $(find $THEOS/sdks -name "*.sdk" -maxdepth 1 -print)"
-          echo "FINALPACKAGE=1" >> $GITHUB_ENV
-          cd $GITHUB_WORKSPACE/TrollSpeed
           echo "PKG_VERSION=$(./get-version.sh)" >> $GITHUB_ENV
 
-      - name: Build package
+      - name: Build IPA
         run: |
-          cd $GITHUB_WORKSPACE/TrollSpeed
-          ./gen-control.sh
-          ./build.sh
-          THEOS_PACKAGE_SCHEME=roothide FINALPACKAGE=1 gmake clean package
-          THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1 gmake clean package
-          FINALPACKAGE=1 gmake clean package
+          DARKSPEED_UNSIGNED=1 ./build-darkspeed.sh
 
       - name: Collect symbols
         run: |
-          cd $GITHUB_WORKSPACE/TrollSpeed
-          find .theos/obj -name "*.dSYM" -print | zip -r packages/TrollSpeed_${{ env.PKG_VERSION }}_symbols.zip -@
+          zip -qry packages/DarkSpeed_${{ env.PKG_VERSION }}_symbols.zip DarkSpeed.xcarchive/dSYMs
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: TrollSpeed_${{ env.PKG_VERSION }}
+          name: DarkSpeed_${{ env.PKG_VERSION }}
           path: |
-            TrollSpeed/packages/TrollSpeed_*.tipa
-            TrollSpeed/packages/TrollSpeed+AppIntents16_*.tipa
-            TrollSpeed/packages/ch.xxtou.hudapp.jb_*.deb
+            packages/DarkSpeed_*.ipa
 
       - name: Upload symbols
         uses: actions/upload-artifact@v4
         with:
-          name: TrollSpeed_${{ env.PKG_VERSION }}_symbols
+          name: DarkSpeed_${{ env.PKG_VERSION }}_symbols
           path: |
-            TrollSpeed/packages/TrollSpeed_${{ env.PKG_VERSION }}_symbols.zip
+            packages/DarkSpeed_${{ env.PKG_VERSION }}_symbols.zip
 
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.PKG_VERSION }}
-          body_path: TrollSpeed/CHANGELOG.md
+          body_path: README.md
           files: |
-            TrollSpeed/packages/TrollSpeed_*.tipa
-            TrollSpeed/packages/TrollSpeed+AppIntents16_*.tipa
-            TrollSpeed/packages/ch.xxtou.hudapp.jb_*.deb
+            packages/DarkSpeed_*.ipa
+            packages/DarkSpeed_${{ env.PKG_VERSION }}_symbols.zip
