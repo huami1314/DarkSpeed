@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>TrollSpeed</string>
+	<string>TrollSpeed DS</string>
 	<key>CFBundleExecutable</key>
 	<string>TrollSpeed</string>
 	<key>CFBundleIconFile</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleIconName</key>
 	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
-	<string>ch.xxtou.hudapp</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -41,27 +41,26 @@
 	<string>public.app-category.developer-tools</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2023-2024 Lessica &amp; Lakr Aream. All Rights Reserved.</string>
+	<!-- Normal UIApplication; HUDMainApplication is only used for the -hud argv path. -->
 	<key>NSPrincipalClass</key>
-	<string>HUDMainApplication</string>
-	<key>UIApplicationShortcutItems</key>
+	<string>MainApplication</string>
+	<!-- Developer-signed builds are a normal foreground app. The old TrollStore
+	     HUD keys (SystemWindowsSecure / DarkBlur) make SpringBoard show a black
+	     flash and dismiss on icon tap, while CLI launches still keep a process. -->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>AccentColor</string>
+	</dict>
+	<key>UIBackgroundModes</key>
 	<array>
-		<dict>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>wand.and.stars</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Toggle HUD</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>ch.xxtou.shortcut.toggle-hud</string>
-		</dict>
+		<string>audio</string>
 	</array>
-	<key>UIApplicationShowsViewsWhileLocked</key>
-	<false/>
-	<key>UIApplicationSystemWindowsSecureKey</key>
+	<!-- Allow dropping DarkSword's Documents/kernelcache into this app via Finder/Files. -->
+	<key>UIFileSharingEnabled</key>
 	<true/>
-	<key>UIBackgroundStyle</key>
-	<string>UIBackgroundStyleDarkBlur</string>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UIStatusBarStyle</key>

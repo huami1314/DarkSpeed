@@ -12,6 +12,7 @@
 
 #import "IOKit+SPI.h"
 #import "HUDHelper.h"
+#import "DSBridge.h"
 #import "TSEventFetcher.h"
 #import "BackboardServices.h"
 #import "AXEventRepresentation.h"
@@ -74,7 +75,7 @@ void _HUDEventCallback(void *target, void *refcon, IOHIDServiceRef service, IOHI
                 static dispatch_once_t onceToken;
                 dispatch_once(&onceToken, ^{
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
                     keyWindow = [[app windows] firstObject];
 #pragma clang diagnostic pop
                 });
@@ -118,6 +119,11 @@ int main(int argc, char *argv[])
 
         if (strcmp(argv[1], "-hud") == 0)
         {
+            // When DarkSword spawns us with DS_*/DS_HELPER_* KRW fds, attach now.
+            if (DSBridgeAdoptFromEnvironment()) {
+                log_debug(OS_LOG_DEFAULT, "HUD adopted DarkSword KRW from environment");
+            }
+
             pid_t pid = getpid();
             pid_t pgid = getgid();
             (void)pgid;

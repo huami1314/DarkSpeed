@@ -7,6 +7,40 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DSE5E89FE25688FD3B972ED4 /* libxpf.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DS3A0647113D290CFB5F7D9F /* libxpf.dylib */; };
+		DSDF9FC129B4EF9BBE225879 /* libgrabkernel2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DS02D856F5C47EF0755250DA /* libgrabkernel2.dylib */; };
+		DSAEFB1BD8D28F00EAD13763 /* libxpf.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DS3A0647113D290CFB5F7D9F /* libxpf.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DS6253195D2BCEE369EEB96B /* libgrabkernel2.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DS02D856F5C47EF0755250DA /* libgrabkernel2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DS94654A91D7201BB1B561CD /* DSInProcessHUD.mm in Sources */ = {isa = PBXBuildFile; fileRef = DSD388242B94FD8AC25B634C /* DSInProcessHUD.mm */; };
+		DSD0995349C46D887FAEB09E /* persistence_stub.m in Sources */ = {isa = PBXBuildFile; fileRef = DSB8752946F8F938B70355A6 /* persistence_stub.m */; };
+		DSA1CCDB4D9FC47C89696454 /* darksword.m in Sources */ = {isa = PBXBuildFile; fileRef = DS7709C29A58498BA5FDEEB4 /* darksword.m */; };
+		DS89F06621EABBAB73487869 /* offsets.m in Sources */ = {isa = PBXBuildFile; fileRef = DS0FD59AA27B1E85E0460251 /* offsets.m */; };
+		DS76050362023157AA4DFCC5 /* utils.m in Sources */ = {isa = PBXBuildFile; fileRef = DS3906A662B00B1537A76873 /* utils.m */; };
+		DSAC91F41CF5F5E012EA03DC /* vfs.m in Sources */ = {isa = PBXBuildFile; fileRef = DS46E229996AE84BC2481129 /* vfs.m */; };
+		DS25D17BFA9E9ADA13CB32B7 /* sbx.m in Sources */ = {isa = PBXBuildFile; fileRef = DS025C5F8CE3D0B0CDAC11EA /* sbx.m */; };
+		DSE1DFEF3BE7326AD0E0494C /* vnode.m in Sources */ = {isa = PBXBuildFile; fileRef = DS88795F4CEB0C0594BD685F /* vnode.m */; };
+		DSC7D4F2BFAE1C62672C6E7F /* DSInProcessHUD.mm in Sources */ = {isa = PBXBuildFile; fileRef = DSD388242B94FD8AC25B634C /* DSInProcessHUD.mm */; };
+		DSEF139AF73C9CACD9591806 /* persistence_stub.m in Sources */ = {isa = PBXBuildFile; fileRef = DSB8752946F8F938B70355A6 /* persistence_stub.m */; };
+		DSB12E65EF7CF95432804F70 /* darksword.m in Sources */ = {isa = PBXBuildFile; fileRef = DS7709C29A58498BA5FDEEB4 /* darksword.m */; };
+		DSCB2B57E643D28B011998A6 /* offsets.m in Sources */ = {isa = PBXBuildFile; fileRef = DS0FD59AA27B1E85E0460251 /* offsets.m */; };
+		DS641331F3BD833AB01AE0E0 /* utils.m in Sources */ = {isa = PBXBuildFile; fileRef = DS3906A662B00B1537A76873 /* utils.m */; };
+		DS4F226A980404EE4505DC64 /* vfs.m in Sources */ = {isa = PBXBuildFile; fileRef = DS46E229996AE84BC2481129 /* vfs.m */; };
+		DS71A2CB3B2C052082A7B271 /* sbx.m in Sources */ = {isa = PBXBuildFile; fileRef = DS025C5F8CE3D0B0CDAC11EA /* sbx.m */; };
+		DSA87FCA18F17A9FCFB9C289 /* vnode.m in Sources */ = {isa = PBXBuildFile; fileRef = DS88795F4CEB0C0594BD685F /* vnode.m */; };
+		DSB100032B5BF5C6007235A6 /* DSBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = DSB100022B5BF5C6007235A6 /* DSBridge.mm */; };
+		DSB100042B5BF5C6007235A6 /* DSBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = DSB100022B5BF5C6007235A6 /* DSBridge.mm */; };
+		D52000000000000000000001 /* RemoteCall.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000001 /* RemoteCall.m */; };
+		D52000000000000000000002 /* exc.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000002 /* exc.m */; };
+		D52000000000000000000003 /* thread.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000003 /* thread.m */; };
+		D52000000000000000000004 /* vm.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000004 /* vm.m */; };
+		D52000000000000000000005 /* pac.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000005 /* pac.m */; };
+		D52000000000000000000006 /* findcachedataoff.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000006 /* findcachedataoff.m */; };
+		D53000000000000000000001 /* RemoteCall.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000001 /* RemoteCall.m */; };
+		D53000000000000000000002 /* exc.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000002 /* exc.m */; };
+		D53000000000000000000003 /* thread.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000003 /* thread.m */; };
+		D53000000000000000000004 /* vm.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000004 /* vm.m */; };
+		D53000000000000000000005 /* pac.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000005 /* pac.m */; };
+		D53000000000000000000006 /* findcachedataoff.m in Sources */ = {isa = PBXBuildFile; fileRef = D51000000000000000000006 /* findcachedataoff.m */; };
 		CC2A77302B6AADB400796650 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CC2A772F2B6AADB400796650 /* Settings.bundle */; };
 		CC654E0F2DABD9C200D54F83 /* ActivateHUDIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8DDA8E2B654DC8001C7C9E /* ActivateHUDIntent.swift */; };
 		CC654E102DABD9C200D54F83 /* TSSettingsIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9130A62B62A33A006E3280 /* TSSettingsIndex.swift */; };
@@ -92,12 +126,32 @@
 		CC8DDA922B655156001C7C9E /* DeactivateHUDIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8DDA912B655156001C7C9E /* DeactivateHUDIntent.swift */; };
 		CC8DDA952B6551C7001C7C9E /* ToggleHUDIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8DDA942B655183001C7C9E /* ToggleHUDIntent.swift */; };
 		CC8DDA9A2B6631DC001C7C9E /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC8DDA982B66318E001C7C9E /* AppIntents.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		DSAVFOUNDATION00000000000002 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DSAVFOUNDATION00000000000001 /* AVFoundation.framework */; };
 		CC91309E2B616541006E3280 /* HUDBackdropLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC91309D2B616541006E3280 /* HUDBackdropLabel.mm */; };
 		CC9130A32B616C18006E3280 /* HUDBackdropView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC9130A22B616C18006E3280 /* HUDBackdropView.mm */; };
 		CC9130A72B62A33A006E3280 /* TSSettingsIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9130A62B62A33A006E3280 /* TSSettingsIndex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DS3A0647113D290CFB5F7D9F /* libxpf.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxpf.dylib; path = Vendor/darksword-lib-thin/libxpf.dylib; sourceTree = SOURCE_ROOT; };
+		DS02D856F5C47EF0755250DA /* libgrabkernel2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgrabkernel2.dylib; path = Vendor/darksword-lib-thin/libgrabkernel2.dylib; sourceTree = SOURCE_ROOT; };
+		DS5DD4BDAA87258C38A20CEA /* DSInProcessHUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSInProcessHUD.h; path = darksword/DSInProcessHUD.h; sourceTree = SOURCE_ROOT; };
+		DSD388242B94FD8AC25B634C /* DSInProcessHUD.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DSInProcessHUD.mm; path = darksword/DSInProcessHUD.mm; sourceTree = SOURCE_ROOT; };
+		DSB8752946F8F938B70355A6 /* persistence_stub.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = persistence_stub.m; path = darksword/stubs/persistence_stub.m; sourceTree = SOURCE_ROOT; };
+		DS7709C29A58498BA5FDEEB4 /* darksword.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = darksword.m; path = Vendor/darksword-kexploit/darksword.m; sourceTree = SOURCE_ROOT; };
+		DS0FD59AA27B1E85E0460251 /* offsets.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = offsets.m; path = Vendor/darksword-kexploit/offsets.m; sourceTree = SOURCE_ROOT; };
+		DS3906A662B00B1537A76873 /* utils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = utils.m; path = Vendor/darksword-kexploit/utils.m; sourceTree = SOURCE_ROOT; };
+		DS46E229996AE84BC2481129 /* vfs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = vfs.m; path = Vendor/darksword-kexploit/pe/vfs.m; sourceTree = SOURCE_ROOT; };
+		DS025C5F8CE3D0B0CDAC11EA /* sbx.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = sbx.m; path = Vendor/darksword-kexploit/pe/sbx.m; sourceTree = SOURCE_ROOT; };
+		DS88795F4CEB0C0594BD685F /* vnode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = vnode.m; path = Vendor/darksword-kexploit/pe/vnode.m; sourceTree = SOURCE_ROOT; };
+		DSB100012B5BF5C6007235A6 /* DSBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSBridge.h; path = darksword/DSBridge.h; sourceTree = SOURCE_ROOT; };
+		DSB100022B5BF5C6007235A6 /* DSBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DSBridge.mm; path = darksword/DSBridge.mm; sourceTree = SOURCE_ROOT; };
+		D51000000000000000000001 /* RemoteCall.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RemoteCall.m; path = Vendor/darksword-kexploit/TaskRop/RemoteCall.m; sourceTree = SOURCE_ROOT; };
+		D51000000000000000000002 /* exc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = exc.m; path = Vendor/darksword-kexploit/TaskRop/exc.m; sourceTree = SOURCE_ROOT; };
+		D51000000000000000000003 /* thread.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = thread.m; path = Vendor/darksword-kexploit/TaskRop/thread.m; sourceTree = SOURCE_ROOT; };
+		D51000000000000000000004 /* vm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = vm.m; path = Vendor/darksword-kexploit/TaskRop/vm.m; sourceTree = SOURCE_ROOT; };
+		D51000000000000000000005 /* pac.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = pac.m; path = Vendor/darksword-kexploit/TaskRop/pac.m; sourceTree = SOURCE_ROOT; };
+		D51000000000000000000006 /* findcachedataoff.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = findcachedataoff.m; path = Vendor/darksword-kexploit/TaskRop/findcachedataoff.m; sourceTree = SOURCE_ROOT; };
 		0F43B7702B60D397003A435D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = ../Resources/es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0F43B7712B60D397003A435D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = ../Resources/es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CC2A772F2B6AADB400796650 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = Resources/Settings.bundle; sourceTree = SOURCE_ROOT; };
@@ -191,6 +245,7 @@
 		CC8DDA912B655156001C7C9E /* DeactivateHUDIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeactivateHUDIntent.swift; sourceTree = "<group>"; };
 		CC8DDA942B655183001C7C9E /* ToggleHUDIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleHUDIntent.swift; sourceTree = "<group>"; };
 		CC8DDA982B66318E001C7C9E /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
+		DSAVFOUNDATION00000000000001 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		CC91309C2B616541006E3280 /* HUDBackdropLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HUDBackdropLabel.h; sourceTree = "<group>"; };
 		CC91309D2B616541006E3280 /* HUDBackdropLabel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HUDBackdropLabel.mm; sourceTree = "<group>"; };
 		CC9130A02B616BBF006E3280 /* CAFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CAFilter.h; sourceTree = "<group>"; };
@@ -221,7 +276,10 @@
 			files = (
 				CC711D992B5BFF2F007235A6 /* SpringBoardServices.tbd in Frameworks */,
 				CC711D9E2B5C0081007235A6 /* AssertionServices.tbd in Frameworks */,
+				DSE5E89FE25688FD3B972ED4 /* libxpf.dylib in Frameworks */,
+				DSDF9FC129B4EF9BBE225879 /* libgrabkernel2.dylib in Frameworks */,
 				CC8DDA9A2B6631DC001C7C9E /* AppIntents.framework in Frameworks */,
+				DSAVFOUNDATION00000000000002 /* AVFoundation.framework in Frameworks */,
 				CC711D9C2B5C0032007235A6 /* IOKit.tbd in Frameworks */,
 				CC711D9A2B5BFF2F007235A6 /* BackBoardServices.tbd in Frameworks */,
 				CC711D982B5BFF2F007235A6 /* GraphicsServices.tbd in Frameworks */,
@@ -231,6 +289,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DSB100052B5BF5C6007235A6 /* darksword */ = {
+			isa = PBXGroup;
+			children = (
+				DSB100012B5BF5C6007235A6 /* DSBridge.h */,
+				DSB100022B5BF5C6007235A6 /* DSBridge.mm */,
+				D51000000000000000000001 /* RemoteCall.m */,
+				D51000000000000000000002 /* exc.m */,
+				D51000000000000000000003 /* thread.m */,
+				D51000000000000000000004 /* vm.m */,
+				D51000000000000000000005 /* pac.m */,
+				D51000000000000000000006 /* findcachedataoff.m */,
+				DS5DD4BDAA87258C38A20CEA /* DSInProcessHUD.h */,
+				DSD388242B94FD8AC25B634C /* DSInProcessHUD.mm */,
+				DSB8752946F8F938B70355A6 /* persistence_stub.m */,
+				DS7709C29A58498BA5FDEEB4 /* darksword.m */,
+				DS0FD59AA27B1E85E0460251 /* offsets.m */,
+				DS3906A662B00B1537A76873 /* utils.m */,
+				DS46E229996AE84BC2481129 /* vfs.m */,
+				DS025C5F8CE3D0B0CDAC11EA /* sbx.m */,
+				DS88795F4CEB0C0594BD685F /* vnode.m */,
+			);
+			path = darksword;
+			sourceTree = "<group>";
+		};
 		CC711CF82B5BF550007235A6 = {
 			isa = PBXGroup;
 			children = (
@@ -238,6 +320,7 @@
 				CC711D652B5BF6B7007235A6 /* headers */,
 				CC711D942B5BFE9F007235A6 /* libraries */,
 				CC711D032B5BF550007235A6 /* supports */,
+				DSB100052B5BF5C6007235A6 /* darksword */,
 				CC711D1D2B5BF5C6007235A6 /* sources */,
 				CC8DDA972B66318E001C7C9E /* Frameworks */,
 			);
@@ -441,6 +524,7 @@
 				CC711CFD2B5BF550007235A6 /* Sources */,
 				CC711CFE2B5BF550007235A6 /* Frameworks */,
 				CC711CFF2B5BF550007235A6 /* Resources */,
+				DSF10002EMBEDDARKSWORDDYLIBS00 /* Embed DarkSword dylibs */,
 			);
 			buildRules = (
 			);
@@ -513,6 +597,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		DSF10002EMBEDDARKSWORDDYLIBS00 /* Embed DarkSword dylibs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Vendor/darksword-lib-thin/libxpf.dylib",
+				"$(SRCROOT)/Vendor/darksword-lib-thin/libgrabkernel2.dylib",
+			);
+			name = "Embed DarkSword dylibs";
+			outputPaths = (
+				"$(CODESIGNING_FOLDER_PATH)/Frameworks/libxpf.dylib",
+				"$(CODESIGNING_FOLDER_PATH)/Frameworks/libgrabkernel2.dylib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nFW=\"$CODESIGNING_FOLDER_PATH/Frameworks\"\nmkdir -p \"$FW\"\ncp -f \"$SRCROOT/Vendor/darksword-lib-thin/libxpf.dylib\" \"$FW/libxpf.dylib\"\ncp -f \"$SRCROOT/Vendor/darksword-lib-thin/libgrabkernel2.dylib\" \"$FW/libgrabkernel2.dylib\"\n# ldid re-signs the dylibs in build-darksword.sh after archiving.\nif [ -n \"$EXPANDED_CODE_SIGN_IDENTITY\" ] && [ \"$CODE_SIGNING_ALLOWED\" = \"YES\" ]; then\n  /usr/bin/codesign --remove-signature \"$FW/libxpf.dylib\" >/dev/null 2>&1 || true\n  /usr/bin/codesign --remove-signature \"$FW/libgrabkernel2.dylib\" >/dev/null 2>&1 || true\n  /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" --timestamp=none --generate-entitlement-der \"$FW/libxpf.dylib\"\n  /usr/bin/codesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" --timestamp=none --generate-entitlement-der \"$FW/libgrabkernel2.dylib\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CC654E0E2DABD9C200D54F83 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -521,6 +626,21 @@
 				CC654E0F2DABD9C200D54F83 /* ActivateHUDIntent.swift in Sources */,
 				CC654E102DABD9C200D54F83 /* TSSettingsIndex.swift in Sources */,
 				CC654E112DABD9C200D54F83 /* HUDHelper.mm in Sources */,
+				DSB100042B5BF5C6007235A6 /* DSBridge.mm in Sources */,
+				D53000000000000000000001 /* RemoteCall.m in Sources */,
+				D53000000000000000000002 /* exc.m in Sources */,
+				D53000000000000000000003 /* thread.m in Sources */,
+				D53000000000000000000004 /* vm.m in Sources */,
+				D53000000000000000000005 /* pac.m in Sources */,
+				D53000000000000000000006 /* findcachedataoff.m in Sources */,
+				DSC7D4F2BFAE1C62672C6E7F /* DSInProcessHUD.mm in Sources */,
+				DSEF139AF73C9CACD9591806 /* persistence_stub.m in Sources */,
+				DSB12E65EF7CF95432804F70 /* darksword.m in Sources */,
+				DSCB2B57E643D28B011998A6 /* offsets.m in Sources */,
+				DS641331F3BD833AB01AE0E0 /* utils.m in Sources */,
+				DS4F226A980404EE4505DC64 /* vfs.m in Sources */,
+				DS71A2CB3B2C052082A7B271 /* sbx.m in Sources */,
+				DSA87FCA18F17A9FCFB9C289 /* vnode.m in Sources */,
 				CC654E122DABD9C200D54F83 /* SPLarkPresentingAnimationController.swift in Sources */,
 				CC654E132DABD9C200D54F83 /* SPLarkDismissingAnimationController.swift in Sources */,
 				CC654E142DABD9C200D54F83 /* HUDBackdropView.mm in Sources */,
@@ -561,6 +681,21 @@
 				CC8DDA8F2B654DC8001C7C9E /* ActivateHUDIntent.swift in Sources */,
 				CC9130A72B62A33A006E3280 /* TSSettingsIndex.swift in Sources */,
 				CC711D4A2B5BF5C6007235A6 /* HUDHelper.mm in Sources */,
+				DSB100032B5BF5C6007235A6 /* DSBridge.mm in Sources */,
+				D52000000000000000000001 /* RemoteCall.m in Sources */,
+				D52000000000000000000002 /* exc.m in Sources */,
+				D52000000000000000000003 /* thread.m in Sources */,
+				D52000000000000000000004 /* vm.m in Sources */,
+				D52000000000000000000005 /* pac.m in Sources */,
+				D52000000000000000000006 /* findcachedataoff.m in Sources */,
+				DS94654A91D7201BB1B561CD /* DSInProcessHUD.mm in Sources */,
+				DSD0995349C46D887FAEB09E /* persistence_stub.m in Sources */,
+				DSA1CCDB4D9FC47C89696454 /* darksword.m in Sources */,
+				DS89F06621EABBAB73487869 /* offsets.m in Sources */,
+				DS76050362023157AA4DFCC5 /* utils.m in Sources */,
+				DSAC91F41CF5F5E012EA03DC /* vfs.m in Sources */,
+				DS25D17BFA9E9ADA13CB32B7 /* sbx.m in Sources */,
+				DSE1DFEF3BE7326AD0E0494C /* vnode.m in Sources */,
 				CC711D532B5BF5C6007235A6 /* SPLarkPresentingAnimationController.swift in Sources */,
 				CC711D592B5BF5C6007235A6 /* SPLarkDismissingAnimationController.swift in Sources */,
 				CC9130A32B616C18006E3280 /* HUDBackdropView.mm in Sources */,
@@ -625,7 +760,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = supports/entitlements.plist;
+				CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 13;
@@ -670,7 +805,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = supports/entitlements.plist;
+				CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 13;
@@ -749,7 +884,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -764,7 +899,25 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = $THEOS/vendor/include;
+				HEADER_SEARCH_PATHS = (
+					$THEOS/vendor/include,
+					"$(SRCROOT)/darksword",
+					"$(SRCROOT)/headers",
+					"$(SRCROOT)/Vendor/darksword-headers",
+					"$(SRCROOT)/Vendor/darksword-lib/choma",
+					"$(SRCROOT)/Vendor/darksword-kexploit",
+					"$(SRCROOT)/Vendor/darksword-kexploit/pe",
+					"$(SRCROOT)/Vendor/darksword-kexploit/TaskRop",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/Vendor/darksword-lib-thin",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lxpf",
+					"-lgrabkernel2",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 2.0;
@@ -817,7 +970,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -826,7 +979,25 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = $THEOS/vendor/include;
+				HEADER_SEARCH_PATHS = (
+					$THEOS/vendor/include,
+					"$(SRCROOT)/darksword",
+					"$(SRCROOT)/headers",
+					"$(SRCROOT)/Vendor/darksword-headers",
+					"$(SRCROOT)/Vendor/darksword-lib/choma",
+					"$(SRCROOT)/Vendor/darksword-kexploit",
+					"$(SRCROOT)/Vendor/darksword-kexploit/pe",
+					"$(SRCROOT)/Vendor/darksword-kexploit/TaskRop",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/Vendor/darksword-lib-thin",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lxpf",
+					"-lgrabkernel2",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 2.0;
@@ -844,29 +1015,32 @@
 		CC711D1B2B5BF551007235A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64e;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGN_ENTITLEMENTS = supports/entitlements.plist;
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 13;
-				DEVELOPMENT_TEAM = "-";
+				DEVELOPMENT_TEAM = 6LMF23FAGL;
 				ENABLE_APPINTENTS_DEPLOYMENT_AWARE_PROCESSING = NO;
 				ENABLE_PREVIEWS = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "supports/hudapp-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DISABLE_PATH_REDIRECTION=1",
 					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
+					"USE_DARKSWORD=1",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
+				INFOPLIST_KEY_CFBundleDisplayName = "TrollSpeed DS";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -874,9 +1048,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/libraries",
+					"$(PROJECT_DIR)/Vendor/darksword-lib-thin",
 				);
 				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.xxtou.hudapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.huami.respring;
 				PRODUCT_NAME = TrollSpeed;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -893,29 +1068,32 @@
 		CC711D1C2B5BF551007235A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64e;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGN_ENTITLEMENTS = supports/entitlements.plist;
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = supports/entitlements-darksword.plist;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 13;
-				DEVELOPMENT_TEAM = "-";
+				DEVELOPMENT_TEAM = 6LMF23FAGL;
 				ENABLE_APPINTENTS_DEPLOYMENT_AWARE_PROCESSING = NO;
 				ENABLE_PREVIEWS = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "supports/hudapp-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DISABLE_PATH_REDIRECTION=1",
 					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
+					"USE_DARKSWORD=1",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
+				INFOPLIST_KEY_CFBundleDisplayName = "TrollSpeed DS";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -923,9 +1101,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/libraries",
+					"$(PROJECT_DIR)/Vendor/darksword-lib-thin",
 				);
 				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.xxtou.hudapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.huami.respring;
 				PRODUCT_NAME = TrollSpeed;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = iphoneos;

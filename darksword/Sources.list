@@ -1,0 +1,15 @@
+# DarkSword units compiled by the USE_DARKSWORD build.
+# Paths are relative to the self-contained Vendor/darksword-kexploit directory.
+
+darksword.m
+offsets.m
+utils.m
+pe/vfs.m
+pe/sbx.m
+pe/vnode.m
+TaskRop/RemoteCall.m
+TaskRop/exc.m
+TaskRop/thread.m
+TaskRop/vm.m
+TaskRop/pac.m
+TaskRop/findcachedataoff.m

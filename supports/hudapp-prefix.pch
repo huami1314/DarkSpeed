@@ -30,7 +30,12 @@
 
     #import "NSUserDefaults+Private.h"
 
-#if !TARGET_OS_SIMULATOR
+#if defined(USE_DARKSWORD) && USE_DARKSWORD
+    // Apple Development builds are sandboxed and cannot write the historical
+    // /var/mobile/Library/Preferences path. Keep controller and DS renderer on
+    // one container-owned plist so Darwin reload notifications carry real data.
+    #define USER_DEFAULTS_PATH ([[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:@"ch.xxtou.hudapp.plist"])
+#elif !TARGET_OS_SIMULATOR
     #define USER_DEFAULTS_PATH @"/var/mobile/Library/Preferences/ch.xxtou.hudapp.plist"
 #else
     #define USER_DEFAULTS_PATH ([[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:@"ch.xxtou.hudapp.plist"])

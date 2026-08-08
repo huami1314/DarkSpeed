@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Development / DarkSword signing entitlements.
+	  Stock TrollSpeed uses supports/entitlements.plist (TrollStore private keys:
+	  persona-mgmt, platform-application, no-sandbox, SpringBoard window hosting, …).
+	  Those cannot be granted by an Apple Development profile — keep them only for
+	  tipa + ldid / TrollStore installs via ./build.sh.
+
+	  This file only contains values accepted by Xcode automatic development signing.
+	-->
+	<key>get-task-allow</key>
+	<true/>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)*</string>
+	</array>
+</dict>
+</plist>

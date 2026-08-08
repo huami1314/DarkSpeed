@@ -8,6 +8,7 @@
 #import <notify.h>
 
 #import "HUDHelper.h"
+#import "DSBridge.h"
 #import "MainButton.h"
 #import "MainApplication.h"
 #import "HUDPresetPosition.h"
@@ -41,6 +42,11 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     BOOL _isRemoteHUDActive;
     HUDRootViewController *_localHUDRootViewController;  // Only for debugging
     UIImpactFeedbackGenerator *_impactFeedbackGenerator;
+#if USE_DARKSWORD
+    UIView *_dsProgressOverlay;
+    UIProgressView *_dsProgressBar;
+    UILabel *_dsProgressLabel;
+#endif
 }
 
 + (void)setShouldToggleHUDAfterLaunch:(BOOL)flag
@@ -68,9 +74,20 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     int token;
     notify_register_dispatch(NOTIFY_RELOAD_APP, &token, dispatch_get_main_queue(), ^(int token) {
         [self loadUserDefaults:YES];
+        [self reloadMainButtonState];
+#if USE_DARKSWORD
+        if (DSBridgeLastError().length > 0) {
+            [self showDSFailure:DSBridgeLastError()];
+            [self.backgroundView setUserInteractionEnabled:YES];
+        }
+#endif
     });
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleHUDNotificationReceived:) name:kToggleHUDAfterLaunchNotificationName object:nil];
+
+#if USE_DARKSWORD
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dsProgressDidChange:) name:DSBridgeProgressNotification object:nil];
+#endif
 }
 
 - (void)loadView
@@ -78,7 +95,12 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     CGRect bounds = UIScreen.mainScreen.bounds;
 
     self.view = [[UIView alloc] initWithFrame:bounds];
+#if USE_DARKSWORD
+    // Solid background for normal app presentation (no translucent HUD chrome).
+    self.view.backgroundColor = [UIColor colorWithRed:26/255.0 green:188/255.0 blue:156/255.0 alpha:1.0];
+#else
     self.view.backgroundColor = [UIColor colorWithRed:0.0f / 255.0f green:0.0f / 255.0f blue:0.0f / 255.0f alpha:.580f / 1.0f];  // rgba(0, 0, 0, 0.580)
+#endif
 
     self.backgroundView = [[UIView alloc] initWithFrame:bounds];
     self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -96,7 +118,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     [_topLeftButton addTarget:self action:@selector(tapTopLeftButton:) forControlEvents:UIControlEventTouchUpInside];
     [_topLeftButton setImage:[UIImage systemImageNamed:@"arrow.up.left"] forState:UIControlStateNormal];
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
     [_topLeftButton setAdjustsImageWhenHighlighted:NO];
 #pragma clang diagnostic pop
     [self.backgroundView addSubview:_topLeftButton];
@@ -121,7 +143,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     [_topRightButton addTarget:self action:@selector(tapTopRightButton:) forControlEvents:UIControlEventTouchUpInside];
     [_topRightButton setImage:[UIImage systemImageNamed:@"arrow.up.right"] forState:UIControlStateNormal];
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
     [_topRightButton setAdjustsImageWhenHighlighted:NO];
 #pragma clang diagnostic pop
     [self.backgroundView addSubview:_topRightButton];
@@ -145,7 +167,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     [_topCenterButton addTarget:self action:@selector(tapTopCenterButton:) forControlEvents:UIControlEventTouchUpInside];
     [_topCenterButton setImage:[UIImage systemImageNamed:@"arrow.up"] forState:UIControlStateNormal];
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wdeprecated-decdarkswordtions"
     [_topCenterButton setAdjustsImageWhenHighlighted:NO];
 #pragma clang diagnostic pop
     [self.backgroundView addSubview:_topCenterButton];
@@ -267,7 +289,11 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     if ([RootViewController shouldToggleHUDAfterLaunch]) {
         [RootViewController setShouldToggleHUDAfterLaunch:NO];
         [self tapMainButton:_mainButton];
+#if !USE_DARKSWORD
+        // Stock TrollStore flow: toggle then background. Under Apple Development
+        // this looks exactly like a black-screen flash-crash on icon/URL launch.
         [[UIApplication sharedApplication] suspend];
+#endif
     }
 }
 
@@ -277,7 +303,9 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
         if (!_isRemoteHUDActive) {
             [self tapMainButton:_mainButton];
         }
+#if !USE_DARKSWORD
         [[UIApplication sharedApplication] suspend];
+#endif
     }
 }
 
@@ -287,7 +315,9 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
         if (_isRemoteHUDActive) {
             [self tapMainButton:_mainButton];
         }
+#if !USE_DARKSWORD
         [[UIApplication sharedApplication] suspend];
+#endif
     }
 }
 
@@ -337,7 +367,12 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
 
 - (void)saveUserDefaults
 {
-    [_userDefaults writeToFile:(JBROOT_PATH_NSSTRING(USER_DEFAULTS_PATH)) atomically:YES];
+    BOOL saved = [_userDefaults writeToFile:(JBROOT_PATH_NSSTRING(USER_DEFAULTS_PATH)) atomically:YES];
+    if (!saved) {
+        log_error(OS_LOG_DEFAULT, "Failed to save HUD preferences at %{public}@",
+                  JBROOT_PATH_NSSTRING(USER_DEFAULTS_PATH));
+        return;
+    }
     notify_post(NOTIFY_RELOAD_HUD);
 }
 
@@ -585,7 +620,12 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     [UIView transitionWithView:self.backgroundView duration:HUD_TRANSITION_DURATION options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [strongSelf->_mainButton setTitle:(strongSelf->_isRemoteHUDActive ? NSLocalizedString(@"Exit HUD", nil) : NSLocalizedString(@"Open HUD", nil)) forState:UIControlStateNormal];
-        [strongSelf->_authorLabel setAttributedText:(strongSelf->_isRemoteHUDActive ? hintAttributedString : creditsAttributedString)];
+        NSString *bridgeError = DSBridgeCompiledIn() ? DSBridgeLastError() : @"";
+        if (!strongSelf->_isRemoteHUDActive && bridgeError.length > 0) {
+            [strongSelf->_authorLabel setText:bridgeError];
+        } else {
+            [strongSelf->_authorLabel setAttributedText:(strongSelf->_isRemoteHUDActive ? hintAttributedString : creditsAttributedString)];
+        }
     } completion:nil];
 }
 
@@ -672,34 +712,45 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     log_debug(OS_LOG_DEFAULT, "- [RootViewController tapMainButton:%{public}@]", sender);
 
     BOOL isNowEnabled = [self isHUDEnabled];
+#if USE_DARKSWORD
+    if (!isNowEnabled) {
+        [self showDSProgressOverlay];
+    } else {
+        [self hideDSProgressOverlay];
+    }
+#endif
     [self setHUDEnabled:!isNowEnabled];
     isNowEnabled = !isNowEnabled;
 
     if (isNowEnabled)
     {
-        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-
         [_impactFeedbackGenerator prepare];
         int anyToken;
         __weak typeof(self) weakSelf = self;
         notify_register_dispatch(NOTIFY_LAUNCHED_HUD, &anyToken, dispatch_get_main_queue(), ^(int token) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             notify_cancel(token);
+#if USE_DARKSWORD
+            [strongSelf hideDSProgressOverlay];
+#endif
             [strongSelf->_impactFeedbackGenerator impactOccurred];
-            dispatch_semaphore_signal(semaphore);
+            [strongSelf reloadMainButtonState];
+            [strongSelf.backgroundView setUserInteractionEnabled:YES];
         });
 
         [self.backgroundView setUserInteractionEnabled:NO];
+#if USE_DARKSWORD
+        // DarkSword bootstrap can take minutes; the progress bar is the feedback.
+        // Do not auto re-enable after 5s — only success (notify) or failure
+        // (NOTIFY_RELOAD_APP) ends the busy state.
+#else
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
-            intptr_t timedOut = dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)));
             dispatch_async(dispatch_get_main_queue(), ^{
-                if (timedOut) {
-                    log_error(OS_LOG_DEFAULT, "Timed out waiting for HUD to launch");
-                }
                 [self reloadMainButtonState];
                 [self.backgroundView setUserInteractionEnabled:YES];
             });
         });
+#endif
     }
     else
     {
@@ -710,6 +761,95 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
         });
     }
 }
+
+#if USE_DARKSWORD
+- (void)showDSProgressOverlay
+{
+    if (!_dsProgressOverlay) {
+        UIView *overlay = [[UIView alloc] initWithFrame:self.view.bounds];
+        overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        overlay.backgroundColor = [UIColor colorWithWhite:0.28 alpha:0.96];
+
+        UIProgressView *bar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+        bar.translatesAutoresizingMaskIntoConstraints = NO;
+        bar.progressTintColor = [UIColor colorWithRed:26/255.0 green:188/255.0 blue:156/255.0 alpha:1.0];
+        bar.trackTintColor = [UIColor colorWithWhite:1.0 alpha:0.25];
+        bar.progress = 0.0;
+        [overlay addSubview:bar];
+
+        UILabel *label = [[UILabel alloc] init];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        label.textColor = UIColor.whiteColor;
+        label.font = [UIFont monospacedDigitSystemFontOfSize:15 weight:UIFontWeightSemibold];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.numberOfLines = 0;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+        label.text = @"正在初始化 DS\n0%";
+        [overlay addSubview:label];
+
+        [NSLayoutConstraint activateConstraints:@[
+            [bar.centerYAnchor constraintEqualToAnchor:overlay.centerYAnchor constant:-12.0],
+            [bar.leadingAnchor constraintEqualToAnchor:overlay.leadingAnchor constant:44.0],
+            [bar.trailingAnchor constraintEqualToAnchor:overlay.trailingAnchor constant:-44.0],
+            [bar.heightAnchor constraintEqualToConstant:4.0],
+            [label.topAnchor constraintEqualToAnchor:bar.bottomAnchor constant:18.0],
+            [label.leadingAnchor constraintEqualToAnchor:overlay.leadingAnchor constant:28.0],
+            [label.trailingAnchor constraintEqualToAnchor:overlay.trailingAnchor constant:-28.0],
+            [label.bottomAnchor constraintLessThanOrEqualToAnchor:overlay.bottomAnchor constant:-40.0],
+        ]];
+        _dsProgressOverlay = overlay;
+        _dsProgressBar = bar;
+        _dsProgressLabel = label;
+    }
+
+    if (!_dsProgressOverlay.superview) [self.view addSubview:_dsProgressOverlay];
+    [self.view bringSubviewToFront:_dsProgressOverlay];
+    _dsProgressOverlay.hidden = NO;
+    _dsProgressBar.progressTintColor = [UIColor colorWithRed:26/255.0 green:188/255.0 blue:156/255.0 alpha:1.0];
+    _dsProgressBar.progress = 0.0;
+    _dsProgressLabel.numberOfLines = 0;
+    _dsProgressLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _dsProgressLabel.font = [UIFont monospacedDigitSystemFontOfSize:15 weight:UIFontWeightSemibold];
+    _dsProgressLabel.textAlignment = NSTextAlignmentCenter;
+    _dsProgressLabel.text = @"正在初始化 DS\n0%";
+}
+
+- (void)hideDSProgressOverlay
+{
+    _dsProgressOverlay.hidden = YES;
+}
+
+- (void)showDSFailure:(NSString *)error
+{
+    if (!_dsProgressOverlay) [self showDSProgressOverlay];
+    if (!_dsProgressOverlay.superview) [self.view addSubview:_dsProgressOverlay];
+    [self.view bringSubviewToFront:_dsProgressOverlay];
+    _dsProgressOverlay.hidden = NO;
+    _dsProgressBar.progress = 1.0f;
+    _dsProgressBar.progressTintColor = UIColor.systemRedColor;
+    _dsProgressLabel.numberOfLines = 0;
+    _dsProgressLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _dsProgressLabel.font = [UIFont monospacedSystemFontOfSize:13 weight:UIFontWeightRegular];
+    _dsProgressLabel.textAlignment = NSTextAlignmentLeft;
+    _dsProgressLabel.text = [NSString stringWithFormat:@"DS 初始化失败\n\n%@", error.length > 0 ? error : @"未知错误"];
+}
+
+- (void)dsProgressDidChange:(NSNotification *)note
+{
+    if (!DSBridgeIsRunning()) {
+        // Done or failed — only auto-hide on success; error hides via NOTIFY_RELOAD_APP.
+        if (DSBridgeHUDEnabled()) [self hideDSProgressOverlay];
+        return;
+    }
+    double p = DSBridgeProgress();
+    if (p < 0.0) p = 0.0;
+    if (p > 1.0) p = 1.0;
+    _dsProgressBar.progress = (float)p;
+    NSString *stage = DSBridgeStage();
+    if (stage.length == 0) stage = @"正在初始化 DS";
+    _dsProgressLabel.text = [NSString stringWithFormat:@"%@\n%d%%", stage, (int)llround(p * 100.0)];
+}
+#endif
 
 - (void)tapSettingsButton:(UIButton *)sender
 {

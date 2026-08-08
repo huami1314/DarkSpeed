@@ -11,6 +11,7 @@
 #import <Foundation/Foundation.h>
 
 #import "HUDHelper.h"
+#import "DSBridge.h"
 
 typedef NSString * HUDUserDefaultsKey;
 

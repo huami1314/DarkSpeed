@@ -64,7 +64,7 @@ import UIKit
     }
 
     open override func settingDidSelect(index: Int, completion: @escaping () -> ()) {
-        if index == TSSettingsIndex.passthroughMode.rawValue && alreadyLaunched {
+        if index == TSSettingsIndex.passthroughMode.rawValue && alreadyLaunched && !DSBridgeCompiledIn() {
             restartRequired = true
         }
         delegate?.settingDidSelect(key: settingKey(index: index))

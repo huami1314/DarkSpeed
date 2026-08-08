@@ -11,6 +11,7 @@
 
 #import "HUDHelper.h"
 #import "NSUserDefaults+Private.h"
+#import "DSBridge.h"
 
 extern "C" char **environ;
 
@@ -21,6 +22,11 @@ extern "C" int posix_spawnattr_set_persona_gid_np(const posix_spawnattr_t* __res
 
 BOOL IsHUDEnabled(void)
 {
+    // DarkSword / developer-signed: the HUD is a tagged view in SpringBoard.
+    if (DSBridgeCompiledIn()) {
+        return DSBridgeHUDEnabled();
+    }
+
     static char *executablePath = NULL;
     uint32_t executablePathSize = 0;
     _NSGetExecutablePath(NULL, &executablePathSize);
@@ -68,6 +74,17 @@ BOOL IsHUDEnabled(void)
 void SetHUDEnabled(BOOL isEnabled)
 {
     notify_post(NOTIFY_DISMISSAL_HUD);
+
+    // DarkSword-aware path (no-op unless built with USE_DARKSWORD=1).
+    // On success the bridge owns the spawn; otherwise fall through to the
+    // stock TrollStore persona_np flow.
+    if (DSBridgeSetHUDEnabled(isEnabled)) {
+        log_debug(OS_LOG_DEFAULT, "DSBridge handled SetHUDEnabled(%{public}d)", isEnabled);
+        return;
+    }
+    if (DSBridgeCompiledIn() && DSBridgeLastError().length > 0) {
+        log_debug(OS_LOG_DEFAULT, "DSBridge fallback: %{public}@", DSBridgeLastError());
+    }
 
     posix_spawnattr_t attr;
     posix_spawnattr_init(&attr);
